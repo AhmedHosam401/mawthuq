@@ -201,6 +201,12 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .kchips button{background:none; border:1px solid var(--line); border-radius:999px; padding:4px 12px; cursor:pointer; font-size:13.5px; line-height:1.5}
 .kchips button[aria-pressed="true"]{background:var(--bad); color:var(--bg); border-color:var(--bad)}
 @media (prefers-reduced-motion:no-preference){.chip,.btn,.toc h2{transition:color .15s, border-color .15s, filter .15s}}
+/* ===== v40: on touch screens a single tap must not select a word (that opens the browser's search bar); a long press does ===== */
+@media (hover:none) and (pointer:coarse){
+  body{-webkit-user-select:none; user-select:none}
+  html.selon body{-webkit-user-select:text; user-select:text}
+  input,textarea{-webkit-user-select:text; user-select:text}
+}
 /* ===== v39: folded notes ===== */
 .item .fold .ftxt{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; overflow:hidden}
 .item .fold.open .ftxt{display:block; overflow:visible}
@@ -266,9 +272,8 @@ html{-webkit-tap-highlight-color:transparent}
 :root{--sel:rgba(133,96,28,.26)}
 :root[data-theme="dark"]{--sel:rgba(212,177,106,.30)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sel:rgba(212,177,106,.30)}}
-::selection{background:transparent; color:inherit}
-::-moz-selection{background:transparent; color:inherit}
-input::selection,textarea::selection{background:var(--sel); color:inherit}
+::selection{background:var(--sel); color:inherit}
+::-moz-selection{background:var(--sel); color:inherit}
 header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,.ddscrim,.toast{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 .tile:active,.chips a:active,.kchips button:active,.seg button:active,.bnav a:active{opacity:.72}
 .fpanel .fl{display:block; font-family:var(--f-ui); font-size:13px; color:var(--muted); margin-bottom:4px}
@@ -1064,6 +1069,26 @@ function addInstall(){
   try{if(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)return;}catch(e){}
   view.insertAdjacentHTML('beforeend','<details class="srcdet"><summary>تثبيت موثوق على شاشتك الرئيسية</summary><div class="srcgrp"><p>على Android (Chrome): القائمة ⋮ ثم «تثبيت التطبيق». على iPhone (Safari): زر المشاركة ثم «إضافة إلى الشاشة الرئيسية». بعد التثبيت يعمل الموقع كتطبيق ويفتح بلا شريط المتصفح.</p><button type="button" class="btn" id="instBtn"'+(deferredInstall?'':' hidden')+'>تثبيت الآن</button></div></details>');
 }
+/* ---------- long press to select: selection is switched on only while a press is held ---------- */
+(function(){
+  var selOn=false,touching=false,T=0,sx=0,sy=0;
+  function hasSel(){var g=window.getSelection&&window.getSelection();return !!(g&&!g.isCollapsed&&String(g).length);}
+  function set(on){if(on===selOn)return;selOn=on;document.documentElement.classList.toggle('selon',on);}
+  function off(){clearTimeout(T);if(!hasSel())set(false);}
+  document.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1){clearTimeout(T);return;}
+    touching=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    clearTimeout(T);T=setTimeout(function(){set(true);},250);
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    var t=e.touches[0];if(!t)return;
+    if(Math.abs(t.clientX-sx)>8||Math.abs(t.clientY-sy)>8)off();
+  },{passive:true});
+  function end(){touching=false;off();}
+  document.addEventListener('touchend',end,{passive:true});
+  document.addEventListener('touchcancel',end,{passive:true});
+  document.addEventListener('selectionchange',function(){if(!touching&&selOn&&!hasSel())set(false);});
+})();
 /* ---------- folded notes: show a short preview, expand on demand ---------- */
 var foldT=0;
 function foldScan(all){
