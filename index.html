@@ -50,7 +50,8 @@ header.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; backgro
 .top .row1{display:flex; align-items:baseline; justify-content:space-between; gap:12px}
 .brand{text-decoration:none; font-family:var(--f-display); font-weight:700; font-size:30px; line-height:1.7; padding-top:4px}
 .brand .lg{width:30px; height:30px; vertical-align:-6px; margin-inline-end:8px; color:var(--accent)}
-.brand small{font-family:var(--f-ui); font-weight:400; font-size:13px; color:var(--muted); margin-inline-start:10px}
+.brand small{display:inline-block; font-family:var(--f-ui); font-weight:400; font-size:13px; color:var(--muted); margin-inline-start:12px}
+.brand .bn{display:inline-block}
 .modebtn{display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; background:var(--surface); border:1px solid var(--line); border-radius:50%; padding:0; cursor:pointer; font-family:var(--f-ui); font-size:14px; line-height:1.4}
 .modebtn:hover{border-color:var(--accent)}
 .modebtn svg{width:20px; height:20px; flex:none}
@@ -200,6 +201,14 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .kchips button{background:none; border:1px solid var(--line); border-radius:999px; padding:4px 12px; cursor:pointer; font-size:13.5px; line-height:1.5}
 .kchips button[aria-pressed="true"]{background:var(--bad); color:var(--bg); border-color:var(--bad)}
 @media (prefers-reduced-motion:no-preference){.chip,.btn,.toc h2{transition:color .15s, border-color .15s, filter .15s}}
+/* ===== v39: folded notes ===== */
+.item .fold .ftxt{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; overflow:hidden}
+.item .fold.open .ftxt{display:block; overflow:visible}
+.item .nt-box.fold b{display:block; margin:0 0 2px}
+.fmore{display:none; margin:4px 0 0; padding:4px 2px; background:none; border:0; cursor:pointer; font-family:var(--f-ui); font-size:13.5px; font-weight:700; color:var(--accent)}
+.fmore::after{content:" ▾"; font-size:11px}
+.fold.open .fmore::after{content:" ▴"}
+.fold.can .fmore{display:inline-block}
 /* ===== v37: bottom nav, star, pager, comfortable dark mode ===== */
 :root{--navh:62px; --hdrh:120px}
 .cathead{margin-top:24px}
@@ -249,17 +258,6 @@ body.pgmode{overflow:hidden}
 .pgabout{margin:0}
 .pgabout p{margin:8px 0 0; font-size:17px; line-height:1.85}
 .emptyst{padding:40px 6px; color:var(--muted); font-size:20px; max-width:34em}
-/* softer, warmer dark theme */
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#211D19; --surface:#2A2622; --tint:#332E29; --ink:#DDD3C1; --muted:#A99E8B; --line:#443C32;
-    --accent:#DDA17E; --accent-ink:#2A1D14; --gold:#CFB173; --warnbg:#3A3220; --bad:#E69C8D; --badbg:#3B2925; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#211D19; --surface:#2A2622; --tint:#332E29; --ink:#DDD3C1; --muted:#A99E8B; --line:#443C32;
-  --accent:#DDA17E; --accent-ink:#2A1D14; --gold:#CFB173; --warnbg:#3A3220; --bad:#E69C8D; --badbg:#3B2925; color-scheme:dark;
-}
 
 /* ---- v38: calmer touch behaviour, in-site dropdowns ---- */
 html{-webkit-tap-highlight-color:transparent}
@@ -267,7 +265,9 @@ html{-webkit-tap-highlight-color:transparent}
 :root{--sel:rgba(133,96,28,.26)}
 :root[data-theme="dark"]{--sel:rgba(212,177,106,.30)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sel:rgba(212,177,106,.30)}}
-::selection{background:var(--sel); color:inherit}
+::selection{background:transparent; color:inherit}
+::-moz-selection{background:transparent; color:inherit}
+input::selection,textarea::selection{background:var(--sel); color:inherit}
 header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,.ddscrim,.toast{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 .tile:active,.chips a:active,.kchips button:active,.seg button:active,.bnav a:active{opacity:.72}
 .fpanel .fl{display:block; font-family:var(--f-ui); font-size:13px; color:var(--muted); margin-bottom:4px}
@@ -291,7 +291,7 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
 <div id="app" dir="rtl" lang="ar">
   <header class="top"><div class="wrap">
     <div class="row1">
-      <a class="brand" href="#home" aria-label="الرئيسية"><svg class="lg" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="3.2"/><circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M20.5 33.5l8.2 8.2L44.5 23.5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>موثوق<small>مكتبة المصادر الموثّقة</small></a>
+      <a class="brand" href="#home" aria-label="الرئيسية"><svg class="lg" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="3.2"/><circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M20.5 33.5l8.2 8.2L44.5 23.5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bn">موثوق</span><small>مكتبة المصادر الموثّقة</small></a>
       <button type="button" class="modebtn" id="modeBtn" aria-label="تبديل الوضع الليلي والعادي"><svg id="modeIc" viewBox="0 0 24 24" aria-hidden="true"></svg></button>
     </div>
     <div class="search"><svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="text" inputmode="search" enterkeyhint="search" placeholder="ابحث في كل الفئات" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="بحث"><button type="button" id="qClr" class="qclr" hidden aria-label="مسح البحث">×</button></div>
@@ -746,6 +746,7 @@ var filter='all';
 var STAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1L3.2 9.6l6.1-.8z"/></svg>';
 function starBtn(id){var on=!!STAR[id];return'<button type="button" class="starb" data-star="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'إزالة التمييز بنجمة':'تمييز بنجمة')+'">'+STAR_SVG+'</button>';}
 function markBtn(id){var on=!!(ST.mark&&ST.mark.id===id);return'<button type="button" class="btn alt mk" data-mark="'+id+'" aria-pressed="'+on+'"><svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg><span>'+(on?'العلامة هنا (إزالة)':'علّم هنا (حفظ التقدم)')+'</span></button>';}
+var FMORE='<button type="button" class="fmore" aria-expanded="false">عرض المزيد</button>';
 function itemHTML(it,o){
   o=(o&&typeof o==='object')?o:{};
   var pill=it.st==='x'?'<span class="pill x">غير موثوق</span>'+(it.k?'<span class="kind">'+esc(it.k)+'</span>':''):it.st==='ok'?'<span class="pill ok">موثّق</span>':it.st==='wn'?'<span class="pill wn">تنبيه</span>':'';
@@ -754,12 +755,12 @@ function itemHTML(it,o){
   var h='<article class="item'+(it.st==='x'?' rej':'')+'" id="'+it.id+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+(it.tg?'<span>'+esc(it.tg)+'</span>':'')+starBtn(it.id)+'</div>';
   h+='<h3>'+HL(it.t)+'</h3>';
   if(it.ay)h+='<p class="ay">'+HL(it.ay)+'</p>';
-  if(it.st==='x'){h+='<p class="bd"><span class="lbl2">ما يُتداول</span>'+HL(it.b)+'</p><p class="rj"><b>سبب عدم الاعتماد</b>'+HL(it.r)+'</p>'+(it.x?'<p class="xp"><span class="lbl">ما جُرّب</span>'+HL(it.x)+'</p>':'')+'<p class="src">أين يُتداول: '+HL(it.s)+'</p><div class="act"><button class="btn" type="button" data-card="'+it.id+'">كارت واتساب (غير موثوق)</button>'+mk+'</div></div></article>';return h;}
+  if(it.st==='x'){h+='<p class="bd"><span class="lbl2">ما يُتداول</span>'+HL(it.b)+'</p><p class="rj"><b>سبب عدم الاعتماد</b>'+HL(it.r)+'</p>'+(it.x?'<p class="xp fold"><span class="lbl">ما جُرّب</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>':'')+'<p class="src">أين يُتداول: '+HL(it.s)+'</p><div class="act"><button class="btn" type="button" data-card="'+it.id+'">كارت واتساب (غير موثوق)</button>'+mk+'</div></div></article>';return h;}
   h+='<p class="bd">'+HL(it.b)+'</p>';
-  if(it.x)h+='<p class="xp"><span class="lbl">شرح مختصر</span>'+HL(it.x)+'</p>';
+  if(it.x)h+='<p class="xp fold"><span class="lbl">شرح مختصر</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>';
   if(it.w)h+='<p class="wj"><span class="lbl">وجه الدلالة</span>'+HL(it.w)+'</p>';
   if(it.en)h+='<p class="en" lang="en">'+esc(it.en)+'</p>';
-  if(n)h+='<p class="nt-box"><b>تنبيه</b>'+esc(n)+'</p>';
+  if(n)h+='<p class="nt-box fold"><b>تنبيه</b><span class="ftxt">'+esc(n)+'</span>'+FMORE+'</p>';
   if(it.m&&it.m.length){
     h+='<details class="hd"><summary>نص الحديث بلفظه ('+ar(it.m.length)+')</summary>';
     it.m.forEach(function(m){h+='<div class="hdt"><div class="hs">'+esc(m.b)+' · رقم '+esc(m.r)+'</div><p>'+esc(m.t)+'</p></div>';});
@@ -890,13 +891,14 @@ view.addEventListener('click',function(e){
 var MEM={};
 function sget(k){var v=null;try{v=localStorage.getItem('basaer.'+k);}catch(e){}return v!==null?v:(MEM.hasOwnProperty(k)?MEM[k]:null);}
 function sset(k,v){MEM[k]=v;try{localStorage.setItem('basaer.'+k,v);}catch(e){}}
-var ST={stars:[],mark:null,vmode:'list',bf:'all',bo:'cat'}, STAR={};
+var ST={stars:[],mark:null,vmode:'list',bf:'all',bo:'cat',bd:true}, STAR={};
 (function(){
   try{var a=JSON.parse(sget('stars')||'[]');if(Array.isArray(a))a.forEach(function(x){if(typeof x==='string'&&!STAR[x]){STAR[x]=1;ST.stars.push(x);}});}catch(e){}
   try{var m=JSON.parse(sget('mark')||'null');if(m&&typeof m.id==='string')ST.mark=m;}catch(e){}
   if(sget('vmode')==='swipe')ST.vmode='swipe';
   var f=sget('bf');if(f==='ok'||f==='wn'||f==='x'||f==='all')ST.bf=f;
   if(sget('bo')==='rnd')ST.bo='rnd';
+  ST.bd=sget('bd')!=='0';
 })();
 var BYID=null;
 function itemById(id){if(!BYID){BYID={};D.forEach(function(x){BYID[x.id]=x;});}return BYID[id]||null;}
@@ -1011,10 +1013,13 @@ function initPager(list,start,opts){
 /* ---------- browse tab ---------- */
 function hash32(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
   h^=h>>>16;h=Math.imul(h,2246822507);h^=h>>>13;h=Math.imul(h,3266489909);h^=h>>>16;return h>>>0;}
+/* the same hadith/verse shown in two categories: hide the repeat while browsing */
+var TW=[["basaer-arbain-28","basaer-raqaiq-12"],["basaer-raqaiq-49","basaer-shamail-37"],["basaer-qasas-11","basaer-adnabi-03"],["basaer-qasas-16","basaer-adnabi-05"],["basaer-mujiz-31","basaer-ashrat-03"],["basaer-adilla-07","basaer-sira-21"],["basaer-hifz-16","basaer-sahaba-19"],["basaer-arbain-14","basaer-raqaiq-17"],["basaer-arbain-03","basaer-arkan-24"],["basaer-mujiz-37","basaer-sahaba-32"],["basaer-mujiz-33","basaer-ashrat-02"],["basaer-qa-09","basaer-arkan-17"]],TWM={};TW.forEach(function(g,i){g.forEach(function(id){TWM[id]=i;});});
 function browseList(f,o){
   var a=D.filter(function(x){return f==='all'||(f==='ok'&&x.st==='ok')||(f==='wn'&&(x.st==='wn'||x.st==='nt'))||(f==='x'&&x.st==='x');});
   if(o==='rnd'){var key={};a.forEach(function(x){key[x.id]=hash32('mwq1|'+x.id);});a.sort(function(p,q){return key[p.id]-key[q.id]||(p.id<q.id?-1:1);});}
   else{var ci={};CATS.forEach(function(c,i){ci[c.k]=i;});a.sort(function(p,q){return ci[p.c]-ci[q.c]||((p.st==='x')-(q.st==='x'))||p.no-q.no;});}
+  if(ST.bd){var seen={};a=a.filter(function(x){var g=TWM[x.id];if(g===undefined)return true;if(seen[g])return false;seen[g]=1;return true;});}
   return a;
 }
 function renderBrowse(startId){
@@ -1022,13 +1027,14 @@ function renderBrowse(startId){
   var f=ST.bf,o=ST.bo,id=startId||null;
   if(!id&&ST.mark&&itemById(ST.mark.id)){f=ST.mark.f||f;o=ST.mark.o||o;id=ST.mark.id;ST.bf=f;ST.bo=o;}
   var list=browseList(f,o),idx=0;
-  if(id)for(var i=0;i<list.length;i++)if(list[i].id===id){idx=i;break;}
-  var C={all:0,ok:0,wn:0,x:0};D.forEach(function(x){C.all++;if(x.st==='ok')C.ok++;else if(x.st==='x')C.x++;else C.wn++;});
+  if(id){var fnd=false,i2;for(i2=0;i2<list.length;i2++)if(list[i2].id===id){idx=i2;fnd=true;break;}
+    if(!fnd&&TWM[id]!==undefined)for(i2=0;i2<list.length;i2++)if(TWM[list[i2].id]===TWM[id]){idx=i2;break;}}
+  var C={all:browseList('all',o).length,ok:browseList('ok',o).length,wn:browseList('wn',o).length,x:browseList('x',o).length};
   function b(k,l){return'<button type="button" data-bf="'+k+'" aria-pressed="'+(f===k)+'">'+l+' <small>'+ar(C[k])+'</small></button>';}
   var canGo=!!(ST.mark&&itemById(ST.mark.id));
   view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">تصفّح العناصر</span><span class="pgcnt" id="pgCnt"></span></div>'+
     '<div class="pgrow"><div class="seg" role="group" aria-label="نوع العناصر">'+b('all','الكل')+b('ok','موثّق')+b('wn','تنبيه')+b('x','مستبعد')+'</div></div>'+
-    '<div class="pgrow"><button type="button" class="fbtn" data-bo="'+(o==='cat'?'rnd':'cat')+'" title="تغيير الترتيب">الترتيب: '+(o==='cat'?'حسب الفئات':'عشوائي ثابت')+'</button><button type="button" class="fbtn" id="goMark"'+(canGo?'':' disabled')+'>اذهب للعلامة</button></div></div>'+pagerHTML()+'</div>';
+    '<div class="pgrow"><button type="button" class="fbtn" data-bo="'+(o==='cat'?'rnd':'cat')+'" title="تغيير الترتيب">الترتيب: '+(o==='cat'?'حسب الفئات':'عشوائي ثابت')+'</button><button type="button" class="fbtn" data-bd="'+(ST.bd?'0':'1')+'" aria-pressed="'+(ST.bd?'true':'false')+'" title="إخفاء الحديث أو الآية المتكررة بين الفئات">المكرر: '+(ST.bd?'مخفي':'ظاهر')+'</button><button type="button" class="fbtn" id="goMark"'+(canGo?'':' disabled')+'>اذهب للعلامة</button></div></div>'+pagerHTML()+'</div>';
   initPager(list,idx,{mark:true});
 }
 function curPgId(){return PG&&PG.list[PG.idx]?PG.list[PG.idx].id:null;}
@@ -1057,6 +1063,23 @@ function addInstall(){
   try{if(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)return;}catch(e){}
   view.insertAdjacentHTML('beforeend','<details class="srcdet"><summary>تثبيت موثوق على شاشتك الرئيسية</summary><div class="srcgrp"><p>على Android (Chrome): القائمة ⋮ ثم «تثبيت التطبيق». على iPhone (Safari): زر المشاركة ثم «إضافة إلى الشاشة الرئيسية». بعد التثبيت يعمل الموقع كتطبيق ويفتح بلا شريط المتصفح.</p><button type="button" class="btn" id="instBtn"'+(deferredInstall?'':' hidden')+'>تثبيت الآن</button></div></details>');
 }
+/* ---------- folded notes: show a short preview, expand on demand ---------- */
+var foldT=0;
+function foldScan(all){
+  var els=document.querySelectorAll(all?'.fold':'.fold:not([data-fd])'),rd=[],i,el,t;
+  for(i=0;i<els.length;i++){el=els[i];t=el.querySelector('.ftxt');if(!t)continue;
+    rd.push([el,el.classList.contains('open')||t.scrollHeight>t.clientHeight+2]);}
+  for(i=0;i<rd.length;i++){rd[i][0].setAttribute('data-fd','1');rd[i][0].classList.toggle('can',rd[i][1]);}
+}
+function foldSoon(all){if(foldT)cancelAnimationFrame(foldT);foldT=requestAnimationFrame(function(){foldT=0;foldScan(all);});}
+try{new MutationObserver(function(){foldSoon(false);}).observe(view,{childList:true,subtree:true});}catch(e){}
+try{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){foldSoon(true);});}catch(e){}
+window.addEventListener('resize',function(){foldSoon(true);});
+view.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('.fmore');if(!b)return;
+  var f=b.closest('.fold');if(!f)return;var o=f.classList.toggle('open');
+  b.textContent=o?'إخفاء':'عرض المزيد';b.setAttribute('aria-expanded',o?'true':'false');
+});
 /* ---------- delegated clicks for the new controls ---------- */
 view.addEventListener('click',function(e){
   var t=e.target,x;
@@ -1064,6 +1087,7 @@ view.addEventListener('click',function(e){
   if((x=t.closest('[data-mark]'))){setMark(x.getAttribute('data-mark'));return;}
   if((x=t.closest('[data-vm]'))){ST.vmode=x.getAttribute('data-vm')==='swipe'?'swipe':'list';sset('vmode',ST.vmode);route();return;}
   if((x=t.closest('[data-bf]'))){ST.bf=x.getAttribute('data-bf');sset('bf',ST.bf);renderBrowse(curPgId());setHdr();return;}
+  if((x=t.closest('[data-bd]'))){ST.bd=x.getAttribute('data-bd')==='1';sset('bd',ST.bd?'1':'0');renderBrowse(curPgId());setHdr();return;}
   if((x=t.closest('[data-bo]'))){ST.bo=x.getAttribute('data-bo');sset('bo',ST.bo);renderBrowse(curPgId());setHdr();return;}
   if(t.closest('#goMark')){goMark();return;}
   if((x=t.closest('[data-pg]'))){if(PG)pgGo(PG.idx+(+x.getAttribute('data-pg')),true);return;}
@@ -1081,7 +1105,7 @@ try{if(window.ResizeObserver){new ResizeObserver(setHdr).observe(document.queryS
 var modeBtn=document.getElementById('modeBtn'), modeIc=document.getElementById('modeIc'), curMode='light';
 var IC_SUN='<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g>', IC_MOON='<path fill="currentColor" d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/>';
 function applyMode(m){curMode=m;document.documentElement.setAttribute('data-theme',m);
-  modeIc.innerHTML=m==='dark'?IC_SUN:IC_MOON;modeBtn.setAttribute('aria-label',m==='dark'?'التبديل إلى الوضع العادي':'التبديل إلى الوضع الليلي');modeBtn.title=m==='dark'?'الوضع العادي':'الوضع الليلي';var tm=document.getElementById('themeMeta');if(tm)tm.setAttribute('content',m==='dark'?'#211D19':'#F3EDE0');modeBtn.setAttribute('aria-pressed',String(m==='dark'));}
+  modeIc.innerHTML=m==='dark'?IC_SUN:IC_MOON;modeBtn.setAttribute('aria-label',m==='dark'?'التبديل إلى الوضع العادي':'التبديل إلى الوضع الليلي');modeBtn.title=m==='dark'?'الوضع العادي':'الوضع الليلي';var tm=document.getElementById('themeMeta');if(tm)tm.setAttribute('content',m==='dark'?'#16120E':'#F3EDE0');modeBtn.setAttribute('aria-pressed',String(m==='dark'));}
 var sysDark=false;try{sysDark=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;}catch(e){}
 var savedMode=ls('mode');applyMode(savedMode==='light'||savedMode==='dark'?savedMode:(sysDark?'dark':'light'));
 modeBtn.addEventListener('click',function(){var m=curMode==='dark'?'light':'dark';ls('mode',m);applyMode(m);});
