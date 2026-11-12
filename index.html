@@ -9,10 +9,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="موثوق">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" id="mfLink" href="manifest-light.webmanifest">
+<script>(function(){var d=false;try{var m=localStorage.getItem('basaer.mode');d=m==='dark'||(m!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);}catch(e){}var l=document.getElementById('mfLink');if(l&&d)l.setAttribute('href','manifest-dark.webmanifest');})();</script>
+<link rel="icon" type="image/svg+xml" href="icons/favicon-v2.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192-v2.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-v2.png">
 <script>window.MWQ_PWA=1;</script>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -1388,6 +1389,10 @@ route();
 <script>
 (function(){
  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+ try{
+  var mfSet=function(){var l=document.getElementById('mfLink');if(!l)return;var want=document.documentElement.getAttribute('data-theme')==='dark'?'manifest-dark.webmanifest':'manifest-light.webmanifest';if(l.getAttribute('href')!==want)l.setAttribute('href',want);};
+  new MutationObserver(mfSet).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});mfSet();
+ }catch(e){}
  if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   window.addEventListener('load',function(){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}});
  }

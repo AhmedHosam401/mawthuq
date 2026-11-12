@@ -1,6 +1,6 @@
-/* موثوق — service worker. Build f32818017a. Never touches localStorage: user marks/stars survive every update. */
-var VER='mwq-f32818017a';
-var CORE=["./", "index.html", "manifest.webmanifest", "fonts/fonts.css", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon.svg", "fonts/amiri-arabic-400-normal.woff2", "fonts/amiri-arabic-700-normal.woff2", "fonts/amiri-latin-400-normal.woff2", "fonts/amiri-latin-700-normal.woff2", "fonts/tajawal-arabic-400-normal.woff2", "fonts/tajawal-arabic-500-normal.woff2", "fonts/tajawal-arabic-700-normal.woff2", "fonts/tajawal-latin-400-normal.woff2", "fonts/tajawal-latin-500-normal.woff2", "fonts/tajawal-latin-700-normal.woff2"];
+/* موثوق — service worker. Build 49edba47e7. Never touches localStorage: user marks/stars survive every update. */
+var VER='mwq-49edba47e7';
+var CORE=["./", "index.html", "manifest-light.webmanifest", "manifest-dark.webmanifest", "fonts/fonts.css", "icons/icon-192-v2.png", "icons/icon-512-v2.png", "icons/icon-maskable-512-v2.png", "icons/apple-touch-icon-v2.png", "icons/favicon-v2.svg", "fonts/amiri-arabic-400-normal.woff2", "fonts/amiri-arabic-700-normal.woff2", "fonts/amiri-latin-400-normal.woff2", "fonts/amiri-latin-700-normal.woff2", "fonts/tajawal-arabic-400-normal.woff2", "fonts/tajawal-arabic-500-normal.woff2", "fonts/tajawal-arabic-700-normal.woff2", "fonts/tajawal-latin-400-normal.woff2", "fonts/tajawal-latin-500-normal.woff2", "fonts/tajawal-latin-700-normal.woff2"];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(VER).then(function(c){return c.addAll(CORE);}).then(function(){return self.skipWaiting();}));
 });
@@ -21,6 +21,14 @@ self.addEventListener('fetch',function(e){
       if(res&&res.ok){var cp=res.clone();caches.open(VER).then(function(c){c.put('index.html',cp);});}
       return res;
     }).catch(function(){return caches.match('index.html');}));
+    return;
+  }
+  if(/\/manifest[^\/]*\.webmanifest$|\/icons\//.test(u.pathname)){
+    /* manifest and icons: always ask the network first (revalidated), cache only as the offline fallback */
+    e.respondWith(fetch(r,{cache:'no-cache'}).then(function(res){
+      if(res&&res.ok){var cp=res.clone();caches.open(VER).then(function(c){c.put(r,cp);});}
+      return res;
+    }).catch(function(){return caches.match(r);}));
     return;
   }
   e.respondWith(caches.match(r).then(function(hit){
