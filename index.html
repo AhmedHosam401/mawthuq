@@ -209,6 +209,7 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .fmore::after{content:" ▾"; font-size:11px}
 .fold.open .fmore::after{content:" ▴"}
 .fold.can .fmore{display:inline-block}
+.item .fold.can{cursor:pointer}
 /* ===== v37: bottom nav, star, pager, comfortable dark mode ===== */
 :root{--navh:62px; --hdrh:120px}
 .cathead{margin-top:24px}
@@ -1076,9 +1077,11 @@ try{new MutationObserver(function(){foldSoon(false);}).observe(view,{childList:t
 try{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){foldSoon(true);});}catch(e){}
 window.addEventListener('resize',function(){foldSoon(true);});
 view.addEventListener('click',function(e){
-  var b=e.target.closest&&e.target.closest('.fmore');if(!b)return;
-  var f=b.closest('.fold');if(!f)return;var o=f.classList.toggle('open');
-  b.textContent=o?'إخفاء':'عرض المزيد';b.setAttribute('aria-expanded',o?'true':'false');
+  var t=e.target,f=t.closest&&t.closest('.fold');if(!f||!f.classList.contains('can'))return;
+  var isBtn=!!t.closest('.fmore');
+  if(!isBtn){if(t.closest('a'))return;var sl=window.getSelection&&window.getSelection();if(sl&&String(sl).length)return;}
+  var b=f.querySelector('.fmore'),o=f.classList.toggle('open');
+  if(b){b.textContent=o?'إخفاء':'عرض المزيد';b.setAttribute('aria-expanded',o?'true':'false');}
 });
 /* ---------- delegated clicks for the new controls ---------- */
 view.addEventListener('click',function(e){
