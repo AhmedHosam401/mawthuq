@@ -58,18 +58,24 @@ header.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; backgro
 .modebtn svg{width:20px; height:20px; flex:none}
 .search{position:relative; margin-top:8px}
 .search .sic{position:absolute; inset-inline-start:12px; top:50%; width:18px; height:18px; transform:translateY(-50%); color:var(--muted); pointer-events:none}
-.search input{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:11px 40px; line-height:1.4; font-size:17px}
+.search input{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding-block:11px; padding-inline:40px 90px; line-height:1.4; font-size:17px}
 .search input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
-.qclr{position:absolute; inset-inline-end:6px; top:50%; transform:translateY(-50%); width:30px; height:30px; border:0; border-radius:50%; background:var(--tint); cursor:pointer; font-size:20px; line-height:1; color:var(--muted)}
+.qclr{position:absolute; inset-inline-end:50px; top:50%; transform:translateY(-50%); width:30px; height:30px; border:0; border-radius:50%; background:var(--tint); cursor:pointer; font-size:20px; line-height:1; color:var(--muted)}
 mark{background:color-mix(in srgb,var(--gold) 38%,transparent); color:inherit; border-radius:3px; padding:0 1px}
 .grp small{font-family:var(--f-ui); font-size:14px; color:var(--muted); font-weight:400}
 .search input::placeholder{color:var(--muted)}
 
-main{padding-block:32px 72px}
+main{padding-block:14px 72px}
+.hero{margin-top:10px}
 .hero h1{font-family:var(--f-display); font-weight:700; font-size:clamp(40px,9vw,64px); line-height:1.25; margin:0 0 10px}
 .hero p{margin:0; max-width:40em; color:var(--muted); font-size:21px}
-.totals{margin:16px 0 0; font-family:var(--f-ui); font-size:15px; color:var(--muted)}
-.totals b{color:var(--ink); font-weight:700}
+.stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin:22px 0 0; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-family:var(--f-ui)}
+.stat{padding:12px 4px 11px; text-align:center; border-inline-start:1px solid var(--line); min-width:0}
+.stat:first-child{border-inline-start:0}
+.stat b{display:block; font-family:var(--f-display); font-weight:700; font-size:31px; line-height:1.2; color:var(--ink); font-variant-numeric:tabular-nums}
+.stat span{display:block; font-size:13.5px; line-height:1.45; color:var(--ink)}
+.stat small{display:block; font-size:11.5px; line-height:1.35; color:var(--muted)}
+.stat.ok b{color:var(--accent)} .stat.wn b{color:var(--gold)} .stat.x b{color:var(--bad)}
 
 .tiles{list-style:none; margin:30px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:14px}
 .tile{display:flex; flex-direction:column; gap:8px; height:100%; min-width:0; text-decoration:none; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:18px 18px 16px; box-shadow:0 1px 0 var(--line)}
@@ -100,8 +106,6 @@ details.ex dd{margin:0}
 .chip{flex:none; text-decoration:none; font-family:var(--f-ui); font-size:14px; line-height:1.3; padding:6px 0; color:var(--muted); white-space:nowrap; border-bottom:2px solid transparent}
 .chip:hover{color:var(--ink)}
 .chip[aria-current="page"]{color:var(--ink); border-bottom-color:var(--accent); font-weight:700}
-.crumb{font-family:var(--f-ui); font-size:14px; color:var(--muted); margin:18px 0 6px}
-.crumb a{text-decoration:none; border-bottom:1px solid var(--line)}
 .cathead h1{font-family:var(--f-display); font-weight:700; font-size:clamp(34px,7vw,50px); line-height:1.35; margin:4px 0 4px}
 .cathead p{margin:0; color:var(--muted); max-width:44em}
 .rule{margin:16px 0 0 !important; padding:10px 14px; background:var(--warnbg); color:var(--ink) !important; font-size:18px; line-height:1.85; border-right:3px solid var(--gold)}
@@ -284,6 +288,8 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 @supports (animation-timeline:view(inline)){
  @media (prefers-reduced-motion:no-preference){
   .pager .slide{view-timeline:--pgv inline}
+  /* will-change pins the raster scale: without it the scale animation re-rasterised the card on every frame (the lag) */
+  .pager.fx-depth .slide > *,.pager.fx-rise .slide > *{will-change:transform}
   .pager.fx-depth .slide > *{animation:pgDepth linear both; animation-timeline:--pgv; animation-range:cover 0% cover 100%}
   .pager.fx-rise .slide > *{animation:pgRise linear both; animation-timeline:--pgv; animation-range:cover 0% cover 100%}
  }
@@ -291,6 +297,11 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 .fbtn.ico{padding:5px 9px}
 .fbtn.ico svg{width:17px; height:17px}
 .fbtn:disabled{opacity:.45; cursor:default}
+.search #fBtn{position:absolute; inset-inline-end:5px; top:50%; transform:translateY(-50%); width:38px; height:38px; padding:0; gap:0; justify-content:center; border:0; border-radius:8px; background:var(--tint); color:var(--muted)}
+.search #fBtn svg{width:19px; height:19px}
+.search #fBtn[aria-expanded="true"],.search #fBtn.on{color:var(--accent); background:color-mix(in srgb,var(--accent) 14%,var(--tint))}
+.search #fBtn:active{opacity:.7}
+#fCnt:not(:empty){position:absolute; top:3px; inset-inline-start:3px; min-width:15px; height:15px; padding:0 3px; box-sizing:border-box; border-radius:8px; background:var(--accent); color:var(--accent-ink); font-size:10px; line-height:15px; font-weight:700; text-align:center}
 
 /* ---- v38: calmer touch behaviour, in-site dropdowns ---- */
 html{-webkit-tap-highlight-color:transparent}
@@ -305,19 +316,19 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
 .fpanel .fl{display:block; font-family:var(--f-ui); font-size:13px; color:var(--muted); margin-bottom:4px}
 .ddbtn{width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:9px 12px; font-family:var(--f-ui); font-size:15px; line-height:1.4; color:var(--ink); cursor:pointer; text-align:start}
 .ddbtn svg{width:16px; height:16px; flex:none; color:var(--muted)}
-.ddscrim{position:fixed; inset:0; z-index:70; background:rgba(20,14,8,.48); display:flex; align-items:flex-end; justify-content:center}
+.ddscrim{position:fixed; inset:0; z-index:70; background:transparent}
 .ddscrim[hidden]{display:none}
-.ddsheet{width:100%; max-width:460px; max-height:78vh; max-height:78dvh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line); border-bottom:0; border-radius:16px 16px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.28); animation:ddup .18s ease-out}
-@keyframes ddup{from{transform:translateY(24px); opacity:.4}to{transform:none; opacity:1}}
-.ddhead{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 18px 10px; border-bottom:1px solid var(--line); font-family:var(--f-ui); font-size:14px; color:var(--muted)}
-.ddhead b{font-weight:600; color:var(--ink)}
-.ddx{background:none; border:0; width:34px; height:34px; border-radius:50%; font-size:24px; line-height:1; color:var(--muted); cursor:pointer}
-.ddlist{overflow-y:auto; padding:6px 8px calc(12px + env(safe-area-inset-bottom)); overscroll-behavior:contain}
-.ddopt{display:flex; align-items:center; gap:12px; width:100%; background:none; border:0; border-radius:10px; padding:13px 12px; text-align:start; font-family:var(--f-ui); font-size:16px; line-height:1.5; color:var(--ink); cursor:pointer}
-.ddopt .rd{width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex:none; box-sizing:border-box}
-.ddopt[aria-selected="true"]{background:var(--tint)}
-.ddopt[aria-selected="true"] .rd{border-color:var(--accent); background:radial-gradient(circle,var(--accent) 0 42%,transparent 46%)}
-@media (min-width:700px){.ddscrim{align-items:center}.ddsheet{border-radius:16px; border-bottom:1px solid var(--line)}}
+.ddsheet{position:fixed; display:flex; flex-direction:column; box-sizing:border-box; background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:0 16px 36px rgba(20,14,8,.22),0 2px 6px rgba(20,14,8,.10); overflow:hidden; transform-origin:top center; animation:ddpop .14s ease-out}
+.ddsheet.up{transform-origin:bottom center; animation-name:ddpopu}
+@keyframes ddpop{from{opacity:0; transform:translateY(-6px) scale(.98)}to{opacity:1; transform:none}}
+@keyframes ddpopu{from{opacity:0; transform:translateY(6px) scale(.98)}to{opacity:1; transform:none}}
+.ddlist{flex:1 1 auto; min-height:0; overflow-y:auto; padding:6px; overscroll-behavior:contain}
+.ddopt{display:block; width:100%; background:none; border:0; border-radius:10px; padding:13px 14px; text-align:start; font-family:var(--f-ui); font-size:16px; line-height:1.5; color:var(--ink); cursor:pointer}
+.ddopt:active{background:var(--tint)}
+.ddopt[aria-selected="true"]{background:var(--tint); font-weight:700}
+.ddbtn svg{transition:transform .15s}
+.ddbtn[aria-expanded="true"]{border-color:var(--accent)}
+.ddbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
 </style>
 
 <div id="app" dir="rtl" lang="ar">
@@ -326,8 +337,8 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
       <a class="brand" href="#home" aria-label="الرئيسية"><svg class="lg" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="3.2"/><circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M20.5 33.5l8.2 8.2L44.5 23.5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bn">موثوق</span><small>مكتبة المصادر الموثّقة</small></a>
       <button type="button" class="modebtn" id="modeBtn" aria-label="تبديل الوضع الليلي والعادي"><svg id="modeIc" viewBox="0 0 24 24" aria-hidden="true"></svg></button>
     </div>
-    <div class="search"><svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="text" inputmode="search" enterkeyhint="search" placeholder="ابحث في كل الفئات" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="بحث"><button type="button" id="qClr" class="qclr" hidden aria-label="مسح البحث">×</button></div>
-    <div class="frow"><button type="button" class="fbtn" id="fBtn" aria-expanded="false" aria-controls="fPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>تصفية<span id="fCnt"></span></button></div>
+    <div class="search"><svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="text" inputmode="search" enterkeyhint="search" placeholder="ابحث في كل الفئات" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="بحث"><button type="button" id="qClr" class="qclr" hidden aria-label="مسح البحث">×</button><button type="button" class="fbtn" id="fBtn" aria-label="تصفية" title="تصفية" aria-expanded="false" aria-controls="fPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg><span id="fCnt"></span></button></div>
+    
   </div></header>
   <main><div class="wrap"><div class="fpanel" id="fPanel" hidden></div><div id="view"></div></div></main>
   <nav class="bnav" id="bnav" aria-label="التنقل الرئيسي"><ul>
@@ -757,7 +768,7 @@ function buildPanel(){
    sel('fSt','درجة التوثيق',[['','الكل'],['ok','موثّق'],['wn','تنبيه (محل خلاف)'],['x','غير موثوق (مستبعد)']],F.st)+
    sel('fSrc','نوع المصدر',[['','الكل'],['quran','آية قرآنية'],['hadith','حديث'],['other','كتاب أو مرجع']],F.src)+
    '<button type="button" class="btn alt reset" id="fReset">مسح التصفية</button>';
-  fCnt.textContent=isFiltering()?' ('+ar([F.cat,F.st,F.src].filter(Boolean).length)+')':'';fBtn.classList.toggle('on',isFiltering());
+  fCnt.textContent=isFiltering()?ar([F.cat,F.st,F.src].filter(Boolean).length):'';fBtn.classList.toggle('on',isFiltering());
 }
 function setPanel(open){fPanel.hidden=!open;fBtn.setAttribute('aria-expanded',String(open));if(open)buildPanel();}
 fBtn.addEventListener('click',function(){setPanel(fPanel.hidden);});
@@ -811,7 +822,7 @@ function itemHTML(it,o){
 function renderHome(){
   var main=D.filter(function(x){return x.st!=='x';}), tot=main.length, ok=main.filter(function(x){return x.st==='ok';}).length, wn=main.filter(function(x){return x.st==='wn';}).length, rj=rejItems().length;
   var h='<section class="hero"><h1>موثوق</h1><p>مكتبة نصوص موثّقة بمصدرها ورقمها، في '+ar(CATS.length)+' فئة. من كل عنصر تحمّل كارتاً بمقاس قنوات واتساب (١٠٨٠×١٣٥٠).</p>';
-  h+='<p class="totals"><b>'+ar(tot)+'</b> عنصراً، <b>'+ar(ok)+'</b> موثّق، <b>'+ar(wn)+'</b> بتنبيه (محل خلاف)، <b>'+ar(rj)+'</b> دعوى شائعة لم تثبت</p></section>';
+  h+='<div class="stats" role="list"><div class="stat" role="listitem"><b>'+ar(tot)+'</b><span>عنصراً</span></div><div class="stat ok" role="listitem"><b>'+ar(ok)+'</b><span>موثّق</span></div><div class="stat wn" role="listitem"><b>'+ar(wn)+'</b><span>تنبيه</span><small>محل خلاف</small></div><div class="stat x" role="listitem"><b>'+ar(rj)+'</b><span>لم تثبت</span><small>دعوى شائعة</small></div></div></section>';
   h+='<div class="tiles">';
   CATS.forEach(function(c,i){var s=cnt(c.k);
     h+='<a class="tile" href="#'+c.k+'"><div class="top"><span class="no">'+ar2(i+1)+'</span></div><h2>'+esc(c.n)+'</h2><p>'+esc(c.d)+'</p><div class="nums"><b>'+ar(s.ok)+'</b> موثّق'+(s.wn?' · '+ar(s.wn)+' تنبيه':'')+'</div></a>';});
@@ -821,14 +832,14 @@ function renderHome(){
   view.innerHTML=h;
 }
 function renderSources(){
-  view.innerHTML='<div class="crumb"><a href="#home">كل الفئات</a></div><section class="cathead"><h1>المصادر المعتمدة</h1><p class="intro">تذكر كل بطاقة مصدرها برقم الحديث أو الآية أو الصفحة، وهذه قائمة جامعة بالمصادر التي استُند إليها مرتبة بحسب نوعها. وحيث ذُكر عدد فهو عدد البطاقات التي تستشهد بالمصدر.</p></section><section class="block" style="margin-top:8px">'+srcGroups()+'</section>';
+  view.innerHTML='<section class="cathead"><h1>المصادر المعتمدة</h1><p class="intro">تذكر كل بطاقة مصدرها برقم الحديث أو الآية أو الصفحة، وهذه قائمة جامعة بالمصادر التي استُند إليها مرتبة بحسب نوعها. وحيث ذُكر عدد فهو عدد البطاقات التي تستشهد بالمصدر.</p></section><section class="block" style="margin-top:8px">'+srcGroups()+'</section>';
 }
 function addFoot(){if((location.hash||'').slice(1)!=='sources')view.insertAdjacentHTML('beforeend','<p class="srcfoot"><a href="#sources">المصادر المعتمدة في الموقع</a></p>');}
 var RK='';
 function renderRejected(){
   var all=rejItems(), kinds=[];all.forEach(function(x){if(kinds.indexOf(x.k)<0)kinds.push(x.k);});
   var list=all.filter(function(x){return!RK||x.k===RK;});
-  var h='<div class="crumb"><a href="#home">كل الفئات</a></div><section class="cathead"><h1>غير الموثوق: ما استُبعد ولماذا</h1>'+
+  var h='<section class="cathead"><h1>غير الموثوق: ما استُبعد ولماذا</h1>'+
    '<p class="intro">كما يفصل علماء الحديث الصحيح عن الضعيف، يفصل الموقع هنا الموثوق عن غير الموثوق: ما شاع تداوله ولم يثبت يُعرض مع سبب عدم الاعتماد عليه، حتى يعرف القارئ لماذا لا يُحتج به ولا يُتداول خطأً. لكل عنصر هنا كارت بتصميم خاص يبيّن أنه غير موثوق وسبب ذلك، حتى يُنشر التحذير كما يُنشر الصحيح.</p></section>';
   h+='<div class="kchips" role="group" aria-label="نوع السبب"><button type="button" data-rk="" aria-pressed="'+(RK==='')+'">الكل ('+ar(all.length)+')</button>'+kinds.map(function(k){return'<button type="button" data-rk="'+esc(k)+'" aria-pressed="'+(RK===k)+'">'+esc(k)+' ('+ar(all.filter(function(x){return x.k===k;}).length)+')</button>';}).join('')+'</div>';
   h+='<p class="hint" style="margin-top:8px">العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.</p>';
@@ -859,7 +870,7 @@ function renderCat(k){
       '<details class="hd pgabout"><summary>عن الفئة</summary><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule">'+esc(c.dn)+'</p>':'')+(rn?'<p><a href="#" data-rejcat="'+k+'">المستبعد من هذه الفئة لعدم ثبوته ('+ar(rn)+')</a></p>':'')+'</details></div>'+pagerHTML()+'</div>';
     fixChips();initPager(list,0,{});return;
   }
-  var h='<div class="crumb"><a href="#home">كل الفئات</a></div>'+chipsHTML(k);
+  var h=''+chipsHTML(k);
   h+='<section class="cathead"><h1>'+esc(c.n)+'</h1><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule">'+esc(c.dn)+'</p>':'')+'</section>';
   h+=filtersHTML(all.length,list.length,true);
   h+=list.length?'<div class="items">'+list.map(function(x){return itemHTML(x);}).join('')+'</div>':'<p class="empty">لا عناصر بهذا التصنيف.</p>';
@@ -869,7 +880,7 @@ function renderCat(k){
 function renderSearch(q){
   var ws=qWords(q);HLW=ws;
   var res=filt(D.filter(function(x){return passF(x)&&hit(x,ws);}));
-  var h='<div class="crumb"><a href="#home" data-clear="1">كل الفئات</a></div><section class="cathead"><h1>'+(q?'نتائج البحث':'نتائج التصفية')+'</h1><p>'+(q?'«'+esc(q)+'» — ':'')+ar(res.length)+' نتيجة</p></section>'+filtersHTML(res.length,res.length);
+  var h='<section class="cathead"><h1>'+(q?'نتائج البحث':'نتائج التصفية')+'</h1><p>'+(q?'«'+esc(q)+'» — ':'')+ar(res.length)+' نتيجة</p></section>'+filtersHTML(res.length,res.length);
   if(!res.length){h+='<p class="empty">لا نتائج. جرّب كلمة أقصر أو جزءاً من الكلمة، فالبحث يتجاوز الهمزات والتشكيل والتاء المربوطة وأل التعريف.</p>';}
   else CATS.forEach(function(c){var a=res.filter(function(x){return x.c===c.k;});var ord={ok:0,nt:1,wn:2,x:3};a.sort(function(p,q2){return ord[p.st]-ord[q2.st];});if(a.length)h+='<h2 class="grp">'+esc(c.n)+' <small>'+ar(a.length)+'</small></h2><div class="items">'+a.map(itemHTML).join('')+'</div>';});
   view.innerHTML=h;HLW=null;
@@ -968,28 +979,39 @@ var DDS=null,ddCur=null,ddPrevOv='';
 function ddEnsure(){
   if(DDS)return DDS;
   DDS=document.createElement('div');DDS.className='ddscrim';DDS.id='ddScrim';DDS.hidden=true;
-  DDS.innerHTML='<div class="ddsheet" role="dialog" aria-modal="true"><div class="ddhead"><b id="ddT"></b><button type="button" class="ddx" id="ddX" aria-label="إغلاق">×</button></div><div class="ddlist" role="listbox" id="ddL"></div></div>';
+  DDS.innerHTML='<div class="ddsheet" role="dialog"><div class="ddlist" role="listbox" id="ddL"></div></div>';
   document.body.appendChild(DDS);
   DDS.addEventListener('click',function(e){
-    if(e.target===DDS||e.target.id==='ddX'){closeDD();return;}
-    var o=e.target.closest('.ddopt');if(!o)return;
+    var o=e.target.closest('.ddopt');
+    if(!o){closeDD();return;}
     var id=ddCur,v=o.getAttribute('data-v');closeDD();
     setTimeout(function(){setFilterVal(id,v);},90);
   });
+  window.addEventListener('resize',function(){if(DDS&&!DDS.hidden)closeDD();});
   return DDS;
 }
 function openDD(id){
   var d=DDO[id];if(!d)return;ddEnsure();ddCur=id;
-  var val=id==='fCat'?F.cat:id==='fSt'?F.st:F.src;
-  document.getElementById('ddT').textContent=d.label;
-  document.getElementById('ddL').innerHTML=d.opts.map(function(o){return'<button type="button" class="ddopt" role="option" data-v="'+o[0]+'" aria-selected="'+(o[0]===val)+'"><span class="rd"></span><span>'+esc(o[1])+'</span></button>';}).join('');
-  DDS.hidden=false;ddPrevOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  var val=id==='fCat'?F.cat:id==='fSt'?F.st:F.src,btn=document.getElementById(id);
+  var sh=DDS.firstChild,list=document.getElementById('ddL');
+  list.innerHTML=d.opts.map(function(o){return'<button type="button" class="ddopt" role="option" data-v="'+o[0]+'" aria-selected="'+(o[0]===val)+'">'+esc(o[1])+'</button>';}).join('');
+  sh.className='ddsheet';sh.style.cssText='visibility:hidden';DDS.hidden=false;
+  ddPrevOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  var r=btn.getBoundingClientRect(),vw=window.innerWidth,vh=window.innerHeight,gap=6,mar=12,
+      want=list.scrollHeight+14,below=vh-r.bottom-gap-mar,above=r.top-gap-mar,up=want>below&&above>below,
+      room=up?above:below,mh=Math.max(150,Math.min(want,room,vh*.72)),w=Math.max(r.width,200),
+      left=Math.min(Math.max(8,r.left),vw-w-8);
+  sh.style.cssText='left:'+left+'px;width:'+w+'px;max-height:'+mh+'px;'+(up?'bottom:'+(vh-r.top+gap)+'px':'top:'+(r.bottom+gap)+'px');
+  if(up)sh.className='ddsheet up';
+  btn.setAttribute('aria-expanded','true');
   ovPush('dd');
-  var sel=DDS.querySelector('[aria-selected="true"]');if(sel){try{sel.scrollIntoView({block:'center'});}catch(e){}}
+  var sel=list.querySelector('[aria-selected="true"]');
+  if(sel&&list.scrollHeight>list.clientHeight)list.scrollTop=sel.getBoundingClientRect().top-list.getBoundingClientRect().top+list.scrollTop-(list.clientHeight-sel.offsetHeight)/2;
 }
 function closeDD(fp){
   if(!DDS||DDS.hidden)return;
   DDS.hidden=true;document.body.style.overflow=ddPrevOv;
+  var b=ddCur&&document.getElementById(ddCur);if(b)b.setAttribute('aria-expanded','false');
   if(!fp)ovDone('dd');
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&DDS&&!DDS.hidden)closeDD();});
