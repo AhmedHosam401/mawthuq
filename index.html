@@ -256,7 +256,7 @@ body.pgmode{overflow:hidden}
 .pgwrap{position:relative; flex:1; min-height:0; display:flex}
 .pager{flex:1; min-width:0; display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
 .pager::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%; min-width:0; scroll-snap-align:start; scroll-snap-stop:always; overflow-y:auto; overscroll-behavior-y:contain; padding:2px 1px 22px}
+.slide{direction:rtl; flex:0 0 100%; min-width:0; scroll-snap-align:start; scroll-snap-stop:always; overflow-y:auto; overscroll-behavior-y:contain; padding:2px 1px 22px}
 .slide .item,.slide .bhead{max-width:760px; margin-inline:auto}
 .bhead{display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; font-family:var(--f-ui); font-size:13.5px; color:var(--muted)}
 .bhead a{color:var(--accent); text-decoration:none; font-weight:600}
@@ -268,7 +268,16 @@ body.pgmode{overflow:hidden}
 .emptyst{padding:40px 6px; color:var(--muted); font-size:20px; max-width:34em}
 /* ---- v42: page-turn effects (افتراضي / بطاقة / إمالة) + fixed info bar ---- */
 .pgbar{flex:none; width:100%; max-width:760px; margin:0 auto 6px; padding-inline:1px}
-.pager.fx-card .slide{background:var(--bg)}
+/* v44: page-turn effects run on the compositor (scroll-driven animations): no per-frame JS, so no jitter; browsers without support just scroll plainly */
+@keyframes pgDepth{0%{opacity:.35; transform:scale(.88)} 50%{opacity:1; transform:scale(1)} 100%{opacity:.35; transform:scale(.88)}}
+@keyframes pgRise{0%{opacity:0; transform:translateY(18px)} 50%{opacity:1; transform:translateY(0)} 100%{opacity:0; transform:translateY(18px)}}
+@supports (animation-timeline:view(inline)){
+ @media (prefers-reduced-motion:no-preference){
+  .pager .slide{view-timeline:--pgv inline}
+  .pager.fx-depth .slide > *{animation:pgDepth linear both; animation-timeline:--pgv; animation-range:cover 0% cover 100%}
+  .pager.fx-rise .slide > *{animation:pgRise linear both; animation-timeline:--pgv; animation-range:cover 0% cover 100%}
+ }
+}
 .fbtn.ico{padding:5px 9px}
 .fbtn.ico svg{width:17px; height:17px}
 .fbtn:disabled{opacity:.45; cursor:default}
@@ -774,7 +783,7 @@ function itemHTML(it,o){
   var h='<article class="item'+(it.st==='x'?' rej':'')+'" id="'+it.id+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+(it.tg?'<span>'+esc(it.tg)+'</span>':'')+starBtn(it.id)+'</div>';
   h+='<h3>'+HL(it.t)+'</h3>';
   if(it.ay)h+='<p class="ay">'+HL(it.ay)+'</p>';
-  if(it.st==='x'){h+='<p class="bd"><span class="lbl2">ما يُتداول</span>'+HL(it.b)+'</p><p class="rj"><b>سبب عدم الاعتماد</b>'+HL(it.r)+'</p>'+(it.x?'<p class="xp fold"><span class="lbl">ما جُرّب</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>':'')+'<p class="src">أين يُتداول: '+HL(it.s)+'</p><div class="act"><button class="btn" type="button" data-card="'+it.id+'">كارت واتساب (غير موثوق)</button>'+mk+'</div></div></article>';return h;}
+  if(it.st==='x'){h+='<p class="bd"><span class="lbl2">ما يُتداول</span>'+HL(it.b)+'</p><p class="rj fold"><b>سبب عدم الاعتماد</b><span class="ftxt">'+HL(it.r)+'</span>'+FMORE+'</p>'+(it.x?'<p class="xp fold"><span class="lbl">ما جُرّب</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>':'')+'<p class="src">أين يُتداول: '+HL(it.s)+'</p><div class="act"><button class="btn" type="button" data-card="'+it.id+'">كارت واتساب (غير موثوق)</button>'+mk+'</div></div></article>';return h;}
   h+='<p class="bd">'+HL(it.b)+'</p>';
   if(it.x)h+='<p class="xp fold"><span class="lbl">شرح مختصر</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>';
   if(it.w)h+='<p class="wj"><span class="lbl">وجه الدلالة</span>'+HL(it.w)+'</p>';
@@ -918,7 +927,7 @@ var ST={stars:[],mark:null,vmode:'list',bf:'all',bo:'cat',bd:true,fx:'def'}, STA
   var f=sget('bf');if(f==='ok'||f==='wn'||f==='x'||f==='all')ST.bf=f;
   if(sget('bo')==='rnd')ST.bo='rnd';
   ST.bd=sget('bd')!=='0';
-  var _fx=sget('fx');ST.fx=(_fx==='card'||_fx==='tilt')?_fx:'def';
+  var _fx=sget('fx');ST.fx=(_fx==='rise'||_fx==='none')?_fx:'depth';
 })();
 var BYID=null;
 function itemById(id){if(!BYID){BYID={};D.forEach(function(x){BYID[x.id]=x;});}return BYID[id]||null;}
@@ -999,7 +1008,7 @@ function setHdr(){var h=document.querySelector('header.top'),n=document.getEleme
   if(n)document.documentElement.style.setProperty('--navh',n.offsetHeight+'px');}
 /* ---------- horizontal pager (one item per swipe, no repeats) ---------- */
 var PG=null;
-function pagerHTML(){return'<div class="pgwrap"><div class="pager" id="pager" dir="rtl" tabindex="0" aria-label="العناصر. مرّر أفقياً لعنصر جديد"></div><button type="button" class="pgarr nx" data-pg="1" aria-label="التالي">‹</button><button type="button" class="pgarr pv" data-pg="-1" aria-label="السابق">›</button></div>';}
+function pagerHTML(){return'<div class="pgwrap"><div class="pager" id="pager" dir="ltr" tabindex="0" aria-label="العناصر. مرّر أفقياً لعنصر جديد"></div><button type="button" class="pgarr nx" data-pg="1" aria-label="التالي">‹</button><button type="button" class="pgarr pv" data-pg="-1" aria-label="السابق">›</button></div>';}
 function slideHTML(it){
   return itemHTML(it,{mark:!!PG.opts.mark});
 }
@@ -1009,54 +1018,44 @@ function pgBar(){var el=document.getElementById('pgBar');if(!el||!PG)return;var 
   var c=CM[it.c]||{n:''},tot=it.st==='x'?rejItems(it.c).length:catItems(it.c).length;
   el.innerHTML='<a href="#'+it.c+'">'+esc(c.n)+'</a><span>'+(it.st==='x'?'مستبعد · ':'')+'رقم '+ar(it.no)+' من '+ar(tot)+'</span>';}
 /* ---------- page-turn effects, shared by every horizontal swipe on the site ---------- */
-var FXN={def:'افتراضي',card:'بطاقة',tilt:'إمالة'},FXO=['def','card','tilt'];
-function fxBtn(){return'<button type="button" class="fbtn" data-fx="1" title="تغيير تأثير الانتقال بين العناصر">الانتقال: '+FXN[ST.fx]+'</button>';}
-function pgFxReset(i){var e=PG&&PG.pg.children[i];if(e){e.style.transform='';e.style.opacity='';e.style.zIndex='';e.style.willChange='';}}
-function pgFx(){
-  if(!PG)return;var pg=PG.pg,W=pg.clientWidth||1,t=Math.abs(pg.scrollLeft)/W,n=PG.list.length,near=Math.round(t);
-  pg.classList.toggle('fx-card',ST.fx==='card');
-  var fxd=PG.fxd||(PG.fxd=[]);
-  if(Math.abs(t-near)<0.004){fxd.forEach(pgFxReset);PG.fxd=[];PG.base=near;return;}
-  var lo=Math.floor(t),keep=[lo,lo+1],k,i,s,d,a,tr,op,z;
-  for(k=0;k<2;k++){i=keep[k];if(i<0||i>=n)continue;s=pg.children[i];d=t-i;a=Math.min(1,Math.abs(d));
-    if(ST.fx==='card'){
-      if(i===PG.base){tr='translateX('+(-d*W*0.82).toFixed(1)+'px) scale('+(1-0.12*a).toFixed(3)+')';op=1-0.85*a;z=0;}
-      else{tr='';op=0.45+0.55*(1-a);z=1;}
-    }else if(ST.fx==='tilt'){tr='rotate('+(-d*7).toFixed(2)+'deg) scale('+(1-0.05*a).toFixed(3)+')';op=1-0.7*a;z=0;}
-    else{tr='';op=1-0.8*a;z=0;}
-    s.style.transform=tr;s.style.opacity=op.toFixed(3);s.style.zIndex=z;s.style.willChange='transform,opacity';
-    if(fxd.indexOf(i)<0)fxd.push(i);
-  }
-  PG.fxd=fxd.filter(function(j){if(j===keep[0]||j===keep[1])return true;pgFxReset(j);return false;});
-}
+var FXN={depth:'عمق',rise:'ارتفاع',none:'بدون'},FXO=['depth','rise','none'];
+var FXOK=false;try{FXOK=!!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view(inline)'));}catch(e){}
+function fxBtn(){if(!FXOK)return'';return'<button type="button" class="fbtn" data-fx="1" title="تغيير تأثير الانتقال بين العناصر">الانتقال: '+FXN[ST.fx]+'</button>';}
+function pgFx(){if(!PG)return;var c=PG.pg.classList;c.remove('fx-depth','fx-rise','fx-none');c.add('fx-'+ST.fx);}
 function pgCount(){var el=document.getElementById('pgCnt');if(el&&PG)el.textContent=ar(PG.idx+1)+' من '+ar(PG.list.length);pgBar();}
+function pgEl(j){return PG.pg.children[PG.list.length-1-j];}
+function pgHyd(j){if(j<0||j>=PG.list.length||PG.hyd[j])return;pgEl(j).innerHTML=slideHTML(PG.list[j]);PG.hyd[j]=1;}
 function pgFill(i){
-  var L=PG.list,pg=PG.pg,lo=Math.max(0,i-2),hi=Math.min(L.length-1,i+2);
-  for(var j=lo;j<=hi;j++){if(!PG.hyd[j]){pg.children[j].innerHTML=slideHTML(L[j]);PG.hyd[j]=1;}}
-  Object.keys(PG.hyd).forEach(function(k){k=+k;if(k<i-6||k>i+6){pg.children[k].innerHTML='';delete PG.hyd[k];}});
+  var pg=PG.pg,j;
+  for(j=i-1;j<=i+1;j++)pgHyd(j);
+  if(PG.ft)clearTimeout(PG.ft);
+  PG.ft=setTimeout(function(){PG.ft=0;if(!PG)return;var c=PG.idx,k;for(k=c-3;k<=c+3;k++)pgHyd(k);
+    Object.keys(PG.hyd).forEach(function(q){q=+q;if(q<c-6||q>c+6){pgEl(q).innerHTML='';delete PG.hyd[q];}});},120);
 }
 function pgGo(i,smooth){
   if(!PG||!PG.list.length)return;
-  i=Math.max(0,Math.min(i,PG.list.length-1));pgFill(i);
+  i=Math.max(0,Math.min(i,PG.list.length-1));
+  var far=Math.abs(i-PG.idx)>1;pgHyd(i);pgFill(i);
   PG.idx=i;pgCount();
-  PG.pg.children[i].scrollIntoView({behavior:smooth?'smooth':'auto',block:'nearest',inline:'start'});
+  var pg=PG.pg,w=pg.clientWidth||1;
+  pg.scrollTo({left:(PG.list.length-1-i)*w,top:0,behavior:(smooth&&!far)?'smooth':'auto'});
 }
 function pgSync(){
-  if(!PG)return;var w=PG.pg.clientWidth||1,i=Math.round(Math.abs(PG.pg.scrollLeft)/w);
+  if(!PG)return;var w=PG.pg.clientWidth||1,i=PG.list.length-1-Math.round(PG.pg.scrollLeft/w);
   i=Math.max(0,Math.min(i,PG.list.length-1));
   if(i!==PG.idx){PG.idx=i;pgFill(i);pgCount();}
 }
 function initPager(list,start,opts){
   var pg=document.getElementById('pager');if(!pg)return;
-  PG={list:list,pg:pg,idx:0,opts:opts||{},hyd:{},base:0,fxd:[]};
+  PG={list:list,pg:pg,idx:0,opts:opts||{},hyd:{},ft:0};
   var wrapEl=pg.closest('.pgwrap');
   if(PG.opts.bar&&wrapEl&&!document.getElementById('pgBar'))wrapEl.insertAdjacentHTML('beforebegin','<div class="bhead pgbar" id="pgBar"></div>');
-  var h='';for(var i=0;i<list.length;i++)h+='<section class="slide" data-i="'+i+'"></section>';
+  var h='';for(var i=list.length-1;i>=0;i--)h+='<section class="slide" data-i="'+i+'"></section>';
   pg.innerHTML=h;setHdr();
   pgGo(Math.max(0,Math.min(start||0,list.length-1)),false);
-  PG.base=PG.idx;
+  pgFx();
   var ticking=false;
-  pg.addEventListener('scroll',function(){if(ticking)return;ticking=true;requestAnimationFrame(function(){ticking=false;pgSync();pgFx();});},{passive:true});
+  pg.addEventListener('scroll',function(){if(ticking)return;ticking=true;requestAnimationFrame(function(){ticking=false;pgSync();});},{passive:true});
 }
 /* ---------- browse tab ---------- */
 function hash32(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
