@@ -69,12 +69,13 @@ main{padding-block:14px 72px}
 .hero{margin-top:10px}
 .hero h1{font-family:var(--f-display); font-weight:700; font-size:clamp(40px,9vw,64px); line-height:1.25; margin:0 0 10px}
 .hero p{margin:0; max-width:40em; color:var(--muted); font-size:21px}
-.stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin:22px 0 0; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-family:var(--f-ui)}
-.stat{padding:12px 4px 11px; text-align:center; border-inline-start:1px solid var(--line); min-width:0}
+.stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin:16px 0 0; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-family:var(--f-ui)}
+.stat{display:block; padding:7px 2px 7px; text-align:center; border-inline-start:1px solid var(--line); min-width:0; color:inherit; text-decoration:none; -webkit-tap-highlight-color:transparent}
+.stat:active{background:var(--tint)}
 .stat:first-child{border-inline-start:0}
-.stat b{display:block; font-family:var(--f-display); font-weight:700; font-size:31px; line-height:1.2; color:var(--ink); font-variant-numeric:tabular-nums}
-.stat span{display:block; font-size:13.5px; line-height:1.45; color:var(--ink)}
-.stat small{display:block; font-size:11.5px; line-height:1.35; color:var(--muted)}
+.stat b{display:block; font-family:var(--f-display); font-weight:700; font-size:23px; line-height:1.25; color:var(--ink); font-variant-numeric:tabular-nums}
+.stat span{display:block; font-size:12.5px; line-height:1.4; color:var(--ink)}
+.stat small{display:block; font-size:10.5px; line-height:1.3; color:var(--muted)}
 .stat.ok b{color:var(--accent)} .stat.wn b{color:var(--gold)} .stat.x b{color:var(--bad)}
 
 .tiles{list-style:none; margin:30px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:14px}
@@ -221,6 +222,9 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .fold.open .fmore::after{content:" ▴"}
 .fold.can .fmore{display:inline-block}
 .item .fold.can{cursor:pointer}
+.rule.fold .ftxt{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1; line-clamp:1; overflow:hidden}
+.rule.fold.open .ftxt{display:block; overflow:visible}
+.rule.fold.can{cursor:pointer}
 /* ===== v37: bottom nav, star, pager, comfortable dark mode ===== */
 :root{--navh:62px; --hdrh:120px}
 .cathead{margin-top:24px}
@@ -234,6 +238,8 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 main{padding-block:28px calc(var(--navh) + 40px)}
 .starb{margin-inline-start:auto; width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center; border:0; background:none; border-radius:50%; cursor:pointer; color:var(--muted); padding:0; -webkit-tap-highlight-color:transparent}
 .starb:hover{color:var(--gold)}
+.starb.mkb{margin-inline-start:auto}
+.starb.mkb + .starb{margin-inline-start:0}
 .starb svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8}
 .starb[aria-pressed="true"]{color:var(--gold)}
 .starb[aria-pressed="true"] svg{fill:currentColor}
@@ -259,7 +265,7 @@ body.pgmode{overflow:hidden}
 .pgt{font-family:var(--f-display); font-weight:700; font-size:22px; line-height:1.4}
 .pgcnt{font-family:var(--f-ui); font-size:14.5px; color:var(--muted); margin-inline-start:auto; font-variant-numeric:tabular-nums; white-space:nowrap}
 .pgwrap{position:relative; flex:1; min-height:0; display:flex}
-.pager{flex:1; min-width:0; display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
+.pager{border-top:1px solid var(--line); flex:1; min-width:0; display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
 .pager::-webkit-scrollbar{display:none}
 /* v45: no scrollbars anywhere (vertical or horizontal) */
 html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
@@ -269,8 +275,9 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 /* space between the category tabs line and the category name */
 .chips + .pgctl{padding-top:18px}
 .pager.flying .slide{pointer-events:none}
+.item.lite{min-height:100%; box-sizing:border-box; overflow:hidden}
 .slide{direction:rtl; flex:0 0 100%; min-width:0; scroll-snap-align:start; scroll-snap-stop:always; overflow:hidden; contain:layout paint style}
-.slide > .sl{height:100%; box-sizing:border-box; overflow-y:auto; overscroll-behavior-y:contain; padding:2px 1px 22px}
+.slide > .sl{height:100%; box-sizing:border-box; overflow-y:auto; overscroll-behavior-y:contain; padding:10px 1px 22px}
 .slide .item,.slide .bhead{max-width:760px; margin-inline:auto}
 .bhead{display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; font-family:var(--f-ui); font-size:13.5px; color:var(--muted)}
 .bhead a{color:var(--accent); text-decoration:none; font-weight:600}
@@ -282,6 +289,7 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 .emptyst{padding:40px 6px; color:var(--muted); font-size:20px; max-width:34em}
 /* ---- v42: page-turn effects (افتراضي / بطاقة / إمالة) + fixed info bar ---- */
 .pgbar{flex:none; width:100%; max-width:760px; margin:0 auto 6px; padding-inline:1px}
+.pgctl + .pgbar{margin-top:14px}
 /* v44: page-turn effects run on the compositor (scroll-driven animations): no per-frame JS, so no jitter; browsers without support just scroll plainly */
 @keyframes pgDepth{0%{opacity:.45; transform:scale(.92)} 50%{opacity:1; transform:scale(1)} 100%{opacity:.45; transform:scale(.92)}}
 @keyframes pgRise{0%{opacity:0; transform:translateY(18px)} 50%{opacity:1; transform:translateY(0)} 100%{opacity:0; transform:translateY(18px)}}
@@ -365,6 +373,7 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
           <label for="footIn">سطر أسفل الكارت (اختياري، مثل اسم القناة)</label>
           <input id="footIn" type="text" maxlength="60" placeholder="اسم القناة">
         </div>
+        <div id="mMark" hidden></div>
         <label class="chk" id="xLbl" hidden><input type="checkbox" id="xChk"> أضف الشرح المختصر على الكارت</label>
         <div class="row">
           <button class="btn" id="saveBtn" type="button">حفظ الصورة</button>
@@ -795,13 +804,15 @@ var filter='all';
 var STAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1L3.2 9.6l6.1-.8z"/></svg>';
 function starBtn(id){var on=!!STAR[id];return'<button type="button" class="starb" data-star="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'إزالة التمييز بنجمة':'تمييز بنجمة')+'">'+STAR_SVG+'</button>';}
 function markBtn(id){var on=!!(ST.mark&&ST.mark.id===id);return'<button type="button" class="btn alt mk" data-mark="'+id+'" aria-pressed="'+on+'"><svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg><span>'+(on?'العلامة هنا (إزالة)':'علّم هنا (حفظ التقدم)')+'</span></button>';}
+var MK_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>';
+function markIcon(id){var on=!!(ST.mark&&ST.mark.id===id);return'<button type="button" class="starb mkb" data-mark="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'إزالة العلامة':'علّم هنا (حفظ التقدم)')+'">'+MK_SVG+'</button>';}
 var FMORE='<button type="button" class="fmore" aria-expanded="false">عرض المزيد</button>';
 function itemHTML(it,o){
   o=(o&&typeof o==='object')?o:{};
   var pill=it.st==='x'?'<span class="pill x">غير موثوق</span>'+(it.k?'<span class="kind">'+esc(it.k)+'</span>':''):it.st==='ok'?'<span class="pill ok">موثّق</span>':it.st==='wn'?'<span class="pill wn">تنبيه</span>':'';
-  var n=noteFor(it), mk=o.mark?markBtn(it.id):'';
+  var n=noteFor(it), mk='', mki=o.mark?markIcon(it.id):'';
   var ct=(o.cat&&CM[it.c])?'<a class="ct" href="#'+it.c+'">'+esc(CM[it.c].n)+'</a>':'';
-  var h='<article class="item'+(it.st==='x'?' rej':'')+'" id="'+it.id+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+(it.tg?'<span>'+esc(it.tg)+'</span>':'')+starBtn(it.id)+'</div>';
+  var h='<article class="item'+(it.st==='x'?' rej':'')+'" id="'+it.id+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+(it.tg?'<span>'+esc(it.tg)+'</span>':'')+mki+starBtn(it.id)+'</div>';
   h+='<h3>'+HL(it.t)+'</h3>';
   if(it.ay)h+='<p class="ay">'+HL(it.ay)+'</p>';
   if(it.st==='x'){h+='<p class="bd"><span class="lbl2">ما يُتداول</span>'+HL(it.b)+'</p><p class="rj fold"><b>سبب عدم الاعتماد</b><span class="ftxt">'+HL(it.r)+'</span>'+FMORE+'</p>'+(it.x?'<p class="xp fold"><span class="lbl">ما جُرّب</span><span class="ftxt">'+HL(it.x)+'</span>'+FMORE+'</p>':'')+'<p class="src">أين يُتداول: '+HL(it.s)+'</p><div class="act"><button class="btn" type="button" data-card="'+it.id+'">كارت واتساب (غير موثوق)</button>'+mk+'</div></div></article>';return h;}
@@ -822,7 +833,7 @@ function itemHTML(it,o){
 function renderHome(){
   var main=D.filter(function(x){return x.st!=='x';}), tot=main.length, ok=main.filter(function(x){return x.st==='ok';}).length, wn=main.filter(function(x){return x.st==='wn';}).length, rj=rejItems().length;
   var h='<section class="hero"><h1>موثوق</h1><p>مكتبة نصوص موثّقة بمصدرها ورقمها، في '+ar(CATS.length)+' فئة. من كل عنصر تحمّل كارتاً بمقاس قنوات واتساب (١٠٨٠×١٣٥٠).</p>';
-  h+='<div class="stats" role="list"><div class="stat" role="listitem"><b>'+ar(tot)+'</b><span>عنصراً</span></div><div class="stat ok" role="listitem"><b>'+ar(ok)+'</b><span>موثّق</span></div><div class="stat wn" role="listitem"><b>'+ar(wn)+'</b><span>تنبيه</span><small>محل خلاف</small></div><div class="stat x" role="listitem"><b>'+ar(rj)+'</b><span>لم تثبت</span><small>دعوى شائعة</small></div></div></section>';
+  h+='<div class="stats"><a class="stat" href="#browse" data-bfs="all"><b>'+ar(tot)+'</b><span>عنصراً</span></a><a class="stat ok" href="#browse" data-bfs="ok"><b>'+ar(ok)+'</b><span>موثّق</span></a><a class="stat wn" href="#browse" data-bfs="wn"><b>'+ar(wn)+'</b><span>تنبيه</span><small>محل خلاف</small></a><a class="stat x" href="#browse" data-bfs="x"><b>'+ar(rj)+'</b><span>لم تثبت</span><small>دعوى شائعة</small></a></div></section>';
   h+='<div class="tiles">';
   CATS.forEach(function(c,i){var s=cnt(c.k);
     h+='<a class="tile" href="#'+c.k+'"><div class="top"><span class="no">'+ar2(i+1)+'</span></div><h2>'+esc(c.n)+'</h2><p>'+esc(c.d)+'</p><div class="nums"><b>'+ar(s.ok)+'</b> موثّق'+(s.wn?' · '+ar(s.wn)+' تنبيه':'')+'</div></a>';});
@@ -871,7 +882,7 @@ function renderCat(k){
     fixChips();initPager(list,0,{});return;
   }
   var h=''+chipsHTML(k);
-  h+='<section class="cathead"><h1>'+esc(c.n)+'</h1><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule">'+esc(c.dn)+'</p>':'')+'</section>';
+  h+='<section class="cathead"><h1>'+esc(c.n)+'</h1><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule fold"><span class="ftxt">'+esc(c.dn)+'</span>'+FMORE+'</p>':'')+'</section>';
   h+=filtersHTML(all.length,list.length,true);
   h+=list.length?'<div class="items">'+list.map(function(x){return itemHTML(x);}).join('')+'</div>':'<p class="empty">لا عناصر بهذا التصنيف.</p>';
   if(rn)h+='<p class="hint" style="margin-top:22px"><a href="#" data-rejcat="'+k+'">المستبعد من هذه الفئة لعدم ثبوته ('+ar(rn)+')</a></p>';
@@ -964,7 +975,7 @@ function toggleStar(id){
 }
 function refreshMark(){
   var id=ST.mark&&ST.mark.id;
-  [].forEach.call(document.querySelectorAll('[data-mark]'),function(b){var is=b.getAttribute('data-mark')===id;b.setAttribute('aria-pressed',String(is));var s=b.querySelector('span');if(s)s.textContent=is?'العلامة هنا (إزالة)':'علّم هنا (حفظ التقدم)';});
+  [].forEach.call(document.querySelectorAll('[data-mark]'),function(b){var is=b.getAttribute('data-mark')===id;b.setAttribute('aria-pressed',String(is));if(b.classList.contains('mkb'))b.setAttribute('aria-label',is?'إزالة العلامة':'علّم هنا (حفظ التقدم)');var s=b.querySelector('span');if(s)s.textContent=is?'العلامة هنا (إزالة)':'علّم هنا (حفظ التقدم)';});
   var g=document.getElementById('goMark');if(g)g.disabled=!(ST.mark&&itemById(ST.mark.id));
 }
 function setMark(id){
@@ -1059,7 +1070,8 @@ function pgEl(j){return PG.pg.children[PG.list.length-1-j];}
 function slideLite(it){
   var pill=it.st==='x'?'<span class="pill x">غير موثوق</span>':it.st==='ok'?'<span class="pill ok">موثّق</span>':it.st==='wn'?'<span class="pill wn">تنبيه</span>':'';
   var ct=CM[it.c]?'<span>'+esc(CM[it.c].n)+'</span>':'';
-  return'<article class="item'+(it.st==='x'?' rej':'')+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+'</div><h3>'+esc(it.t)+'</h3></div></article>';
+  function cut(x,n){x=String(x||'');return x.length>n?x.slice(0,n)+'…':x;}
+  return'<article class="item lite'+(it.st==='x'?' rej':'')+'"><div class="col"><div class="meta"><span class="no" aria-hidden="true">'+ar2(it.no)+'</span>'+pill+ct+'</div><h3>'+esc(it.t)+'</h3>'+(it.ay?'<p class="ay">'+esc(cut(it.ay,160))+'</p>':'')+'<p class="bd">'+esc(cut(it.b,280))+'</p></div></article>';
 }
 /* hyd[j]: 1 = full card, 2 = light card (only while flying past) */
 function pgHyd(j){if(j<0||j>=PG.list.length)return;var h=PG.hyd[j];
@@ -1152,7 +1164,8 @@ function browseList(f,o){
 function renderBrowse(startId){
   setPg(true);fPanel.hidden=true;
   var f=ST.bf,o=ST.bo,id=startId||null;
-  if(!id&&ST.mark&&itemById(ST.mark.id)){f=ST.mark.f||f;o=ST.mark.o||o;id=ST.mark.id;ST.bf=f;ST.bo=o;}
+  var first=ST.bfirst;ST.bfirst=0;
+  if(!id&&!first&&ST.mark&&itemById(ST.mark.id)){f=ST.mark.f||f;o=ST.mark.o||o;id=ST.mark.id;ST.bf=f;ST.bo=o;}
   var list=browseList(f,o),idx=0;
   if(id){var fnd=false,i2;for(i2=0;i2<list.length;i2++)if(list[i2].id===id){idx=i2;fnd=true;break;}
     if(!fnd&&TWM[id]!==undefined)for(i2=0;i2<list.length;i2++)if(TWM[list[i2].id]===TWM[id]){idx=i2;break;}}
@@ -1232,6 +1245,7 @@ view.addEventListener('click',function(e){
 /* ---------- delegated clicks for the new controls ---------- */
 view.addEventListener('click',function(e){
   var t=e.target,x;
+  if((x=t.closest('[data-bfs]'))){ST.bf=x.getAttribute('data-bfs');sset('bf',ST.bf);ST.bfirst=1;return;}
   if((x=t.closest('[data-star]'))){toggleStar(x.getAttribute('data-star'));return;}
   if((x=t.closest('[data-mark]'))){setMark(x.getAttribute('data-mark'));return;}
   if((x=t.closest('[data-vm]'))){ST.vmode=x.getAttribute('data-vm')==='swipe'?'swipe':'list';sset('vmode',ST.vmode);route();return;}
@@ -1477,11 +1491,13 @@ function openModal(id){
   cur=D.filter(function(x){return x.id===id;})[0];if(!cur)return;
   lastFocus=document.activeElement;mTitle.textContent=cur.t;msg.textContent='';
   if(copyBox){copyBox.remove();copyBox=null;}
+  var mm=document.getElementById('mMark');if(keyOf()==='browse'){mm.innerHTML=markBtn(cur.id);mm.hidden=false;}else{mm.innerHTML='';mm.hidden=true;}
   xLbl.hidden=!cur.x;xLbl.lastChild.nodeValue=cur.st==='x'?' أضف ما جُرّب على الكارت':' أضف الشرح المختصر على الكارت';xChk.checked=!!cur.x&&ls('withx')==='1';setSeg();scrim.hidden=false;document.body.style.overflow='hidden';ovPush('modal');closeBtn.focus();
   if(!dlTried){dlTried=true;try{var u=window.claude&&window.claude.use?window.claude.use('downloads'):null;Promise.resolve(u).then(function(d){dl=d||null;if(!dl)hint.textContent='المقاس 1080×1350 (4:5). اضغط مطولاً على الصورة (أو انقر بزر الفأرة الأيمن) واختر حفظ الصورة.';}).catch(function(){dl=null;});}catch(e){dl=null;}}
   refresh();
 }
 function closeModal(fp){scrim.hidden=true;document.body.style.overflow=isPg()?'hidden':'';token++;if(lastFocus&&lastFocus.focus)lastFocus.focus();if(!fp)ovDone('modal');}
+document.getElementById('mMark').addEventListener('click',function(e){if(e.target.closest('[data-mark]')&&cur)setMark(cur.id);});
 closeBtn.addEventListener('click',function(){closeModal();});
 scrim.addEventListener('click',function(e){if(e.target===scrim)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!scrim.hidden)closeModal();});
