@@ -20,7 +20,7 @@
 /* Layout: one reading column. Home is a numbered index (table of contents); each category is a ledger of numbered entries separated by hairlines. */
 :root{
   --bg:#F3EDE0; --surface:#F8F4EA; --tint:#EAE2D0; --ink:#241C14; --muted:#6A5E4D; --line:#D3C8B2;
-  --accent:#7B2D26; --accent-ink:#FBF6EA; --gold:#85601C; --warnbg:#EFE3C6; --bad:#9A2F2F; --badbg:#F7E4DF;
+  --accent:#7B2D26; --accent-ink:#FBF6EA; --gold:#85601C; --warnbg:#EFE3C6; --bad:#9A2F2F; --badbg:#F2E6DC;
   --f-display:"Amiri","Noto Naskh Arabic","Geeza Pro",serif;
   --f-body:"Amiri","Noto Naskh Arabic","Geeza Pro",serif;
   --f-ui:"Tajawal","Segoe UI",system-ui,sans-serif;
@@ -106,6 +106,8 @@ details.ex dd{margin:0}
 .chips{display:flex; gap:18px; overflow-x:auto; padding-block:2px 10px; scrollbar-width:thin; border-bottom:1px solid var(--line)}
 .chip{flex:none; text-decoration:none; font-family:var(--f-ui); font-size:14px; line-height:1.3; padding:6px 0; color:var(--muted); white-space:nowrap; border-bottom:2px solid transparent}
 .chip:hover{color:var(--ink)}
+button.chip{background:none; border:0; border-bottom:2px solid transparent; cursor:pointer; font-family:var(--f-ui); font-size:14px}
+button.chip[aria-current="page"]{border-bottom-color:var(--bad)}
 .chip[aria-current="page"]{color:var(--ink); border-bottom-color:var(--accent); font-weight:700}
 .cathead h1{font-family:var(--f-display); font-weight:700; font-size:clamp(34px,7vw,50px); line-height:1.35; margin:4px 0 4px}
 .cathead p{margin:0; color:var(--muted); max-width:44em}
@@ -152,6 +154,10 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .btn.alt{background:none; color:var(--ink); border-color:var(--line)}
 .btn.alt:hover{border-color:var(--accent)}
 .empty{padding:36px 8px; color:var(--muted); font-size:20px}
+.grp .gcnt{display:inline-block; font-family:var(--f-ui); font-size:12.5px; font-weight:500; line-height:1.5; color:var(--muted); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:1px 10px; margin-inline-start:6px; vertical-align:middle; white-space:nowrap}
+.fold.l2 .ftxt{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden}
+.fold.l2.open .ftxt{display:block; overflow:visible}
+.fold.l2.can{cursor:pointer}
 .grp{font-family:var(--f-display); font-weight:700; font-size:26px; margin:34px 0 0; color:var(--accent)}
 
 .scrim{
@@ -253,7 +259,7 @@ main{padding-block:28px calc(var(--navh) + 40px)}
 .toast{position:fixed; z-index:60; inset-inline:0; bottom:calc(var(--navh) + 14px); margin-inline:auto; width:max-content; max-width:calc(100% - 40px); background:var(--ink); color:var(--bg); font-family:var(--f-ui); font-size:14.5px; line-height:1.5; padding:9px 18px; border-radius:999px; opacity:0; pointer-events:none; transform:translateY(8px); transition:opacity .18s, transform .18s}
 .toast.on{opacity:1; transform:none}
 /* pager screens */
-body.pgmode{overflow:hidden}
+body.pgmode,body.lock{overflow:hidden}
 .pgmode .search,.pgmode .frow{display:none}
 .pgmode header.top{padding-block:6px 6px}
 .pgmode main{padding-block:8px 0}
@@ -321,6 +327,7 @@ html{-webkit-tap-highlight-color:transparent}
 ::-moz-selection{background:var(--sel); color:inherit}
 header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,.ddscrim,.toast{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 .tile:active,.chips a:active,.kchips button:active,.seg button:active,.bnav a:active{opacity:.72}
+.fsave{margin:5px 0 0; font-family:var(--f-ui); font-size:12.5px; line-height:1.5; color:var(--muted)}
 .fpanel .fl{display:block; font-family:var(--f-ui); font-size:13px; color:var(--muted); margin-bottom:4px}
 .ddbtn{width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:9px 12px; font-family:var(--f-ui); font-size:15px; line-height:1.4; color:var(--ink); cursor:pointer; text-align:start}
 .ddbtn svg{width:16px; height:16px; flex:none; color:var(--muted)}
@@ -371,7 +378,8 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
         </div>
         <div>
           <label for="footIn">سطر أسفل الكارت (اختياري، مثل اسم القناة)</label>
-          <input id="footIn" type="text" maxlength="60" placeholder="اسم القناة">
+          <input id="footIn" type="text" maxlength="60" placeholder="اسم القناة" autocomplete="off">
+          <p class="fsave" id="fSave" aria-live="polite"></p>
         </div>
         <div id="mMark" hidden></div>
         <label class="chk" id="xLbl" hidden><input type="checkbox" id="xChk"> أضف الشرح المختصر على الكارت</label>
@@ -847,15 +855,26 @@ function renderSources(){
 }
 function addFoot(){if((location.hash||'').slice(1)!=='sources')view.insertAdjacentHTML('beforeend','<p class="srcfoot"><a href="#sources">المصادر المعتمدة في الموقع</a></p>');}
 var RK='';
+function cntWord(n){return n===1?'عنصر واحد':n===2?'عنصران':n<=10?ar(n)+' عناصر':ar(n)+' عنصراً';}
+function grpHead(c,n){return'<h2 class="grp">'+esc(c.n)+' <span class="gcnt">'+cntWord(n)+'</span></h2>';}
+var REJ_INTRO='كما يفصل علماء الحديث الصحيح عن الضعيف، يفصل الموقع هنا الموثوق عن غير الموثوق: ما شاع تداوله ولم يثبت يُعرض مع سبب عدم الاعتماد عليه، حتى يعرف القارئ لماذا لا يُحتج به ولا يُتداول خطأً. لكل عنصر هنا كارت بتصميم خاص يبيّن أنه غير موثوق وسبب ذلك، حتى يُنشر التحذير كما يُنشر الصحيح.';
 function renderRejected(){
   var all=rejItems(), kinds=[];all.forEach(function(x){if(kinds.indexOf(x.k)<0)kinds.push(x.k);});
   var list=all.filter(function(x){return!RK||x.k===RK;});
+  var chips='<nav class="chips" aria-label="نوع السبب"><button type="button" class="chip" data-rk=""'+(RK===''?' aria-current="page"':'')+'>الكل ('+ar(all.length)+')</button>'+kinds.map(function(k){return'<button type="button" class="chip" data-rk="'+esc(k)+'"'+(RK===k?' aria-current="page"':'')+'>'+esc(k)+' ('+ar(all.filter(function(x){return x.k===k;}).length)+')</button>';}).join('')+'</nav>';
+  var wnl='<p class="hint" style="margin-top:8px">العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.</p>';
+  if(ST.vmode==='swipe'&&list.length){
+    setPg(true);
+    view.innerHTML='<div class="pgv">'+chips+'<div class="pgctl"><div class="pgrow"><span class="pgt">غير الموثوق: ما استُبعد ولماذا</span><span class="pgcnt" id="pgCnt"></span></div>'+
+      '<div class="pgrow">'+vmHTML()+fxBtn()+'</div>'+
+      '<details class="hd pgabout"><summary>عن هذا القسم</summary><p>'+esc(REJ_INTRO)+'</p>'+wnl+'</details></div>'+pagerHTML()+'</div>';
+    fixChips();initPager(list,0,{bar:true});return;
+  }
   var h='<section class="cathead"><h1>غير الموثوق: ما استُبعد ولماذا</h1>'+
-   '<p class="intro">كما يفصل علماء الحديث الصحيح عن الضعيف، يفصل الموقع هنا الموثوق عن غير الموثوق: ما شاع تداوله ولم يثبت يُعرض مع سبب عدم الاعتماد عليه، حتى يعرف القارئ لماذا لا يُحتج به ولا يُتداول خطأً. لكل عنصر هنا كارت بتصميم خاص يبيّن أنه غير موثوق وسبب ذلك، حتى يُنشر التحذير كما يُنشر الصحيح.</p></section>';
-  h+='<div class="kchips" role="group" aria-label="نوع السبب"><button type="button" data-rk="" aria-pressed="'+(RK==='')+'">الكل ('+ar(all.length)+')</button>'+kinds.map(function(k){return'<button type="button" data-rk="'+esc(k)+'" aria-pressed="'+(RK===k)+'">'+esc(k)+' ('+ar(all.filter(function(x){return x.k===k;}).length)+')</button>';}).join('')+'</div>';
-  h+='<p class="hint" style="margin-top:8px">العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.</p>';
-  CATS.forEach(function(c){var a=list.filter(function(x){return x.c===c.k;});if(a.length)h+='<h2 class="grp">'+esc(c.n)+' <small>'+ar(a.length)+'</small></h2><div class="items">'+a.map(itemHTML).join('')+'</div>';});
-  view.innerHTML=h;
+   '<p class="intro fold l2"><span class="ftxt">'+esc(REJ_INTRO)+'</span>'+FMORE+'</p></section>';
+  h+=chips+'<div class="filters">'+vmHTML()+'<span class="count">'+ar(list.length)+' من '+ar(all.length)+'</span></div>'+wnl;
+  CATS.forEach(function(c){var a=list.filter(function(x){return x.c===c.k;});if(a.length)h+=grpHead(c,a.length)+'<div class="items">'+a.map(itemHTML).join('')+'</div>';});
+  view.innerHTML=h;fixChips();
 }
 function filt(a){return a.filter(function(x){return filter==='all'||(filter==='ok'&&x.st==='ok')||(filter==='nt'&&x.st==='nt')||(filter==='wn'&&x.st==='wn');});}
 function segHTML(){function b(k,l){return'<button type="button" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+l+'</button>';}
@@ -893,7 +912,7 @@ function renderSearch(q){
   var res=filt(D.filter(function(x){return passF(x)&&hit(x,ws);}));
   var h='<section class="cathead"><h1>'+(q?'نتائج البحث':'نتائج التصفية')+'</h1><p>'+(q?'«'+esc(q)+'» — ':'')+ar(res.length)+' نتيجة</p></section>'+filtersHTML(res.length,res.length);
   if(!res.length){h+='<p class="empty">لا نتائج. جرّب كلمة أقصر أو جزءاً من الكلمة، فالبحث يتجاوز الهمزات والتشكيل والتاء المربوطة وأل التعريف.</p>';}
-  else CATS.forEach(function(c){var a=res.filter(function(x){return x.c===c.k;});var ord={ok:0,nt:1,wn:2,x:3};a.sort(function(p,q2){return ord[p.st]-ord[q2.st];});if(a.length)h+='<h2 class="grp">'+esc(c.n)+' <small>'+ar(a.length)+'</small></h2><div class="items">'+a.map(itemHTML).join('')+'</div>';});
+  else CATS.forEach(function(c){var a=res.filter(function(x){return x.c===c.k;});var ord={ok:0,nt:1,wn:2,x:3};a.sort(function(p,q2){return ord[p.st]-ord[q2.st];});if(a.length)h+=grpHead(c,a.length)+'<div class="items">'+a.map(itemHTML).join('')+'</div>';});
   view.innerHTML=h;HLW=null;
 }
 var curKey='home', fromPop=false, SCRY={};
@@ -903,6 +922,7 @@ function setPg(on){document.body.classList.toggle('pgmode',!!on);if(!on)PG=null;
 function navSel(k){var key=(k==='browse'||k==='starred'||k==='rejected'||k==='sources')?k:'home';[].forEach.call(document.querySelectorAll('#bnav a'),function(a){if(a.getAttribute('data-nav')===key)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 function isHomeKey(k){return!(k==='rejected'||k==='sources'||k==='browse'||k==='starred'||CM[k]);}
 function route(){
+  syncLock();
   var q=qEl.value.trim(), k=keyOf();
   var oc=view.querySelector('.chips');CHIPX=oc?oc.scrollLeft:null;
   setPg(false);
@@ -986,7 +1006,10 @@ function setMark(id){
 }
 
 /* ---------- in-site dropdown sheet (replaces the browser's native select list) ---------- */
-var DDS=null,ddCur=null,ddPrevOv='';
+var DDS=null,ddCur=null;
+/* the page is locked only while the card dialog or a dropdown is really open; never left locked by a stale inline style */
+function syncLock(){var on=!!((typeof scrim!=='undefined'&&scrim&&!scrim.hidden)||(DDS&&!DDS.hidden));document.body.classList.toggle('lock',on);if(document.body.style.overflow)document.body.style.overflow='';}
+window.addEventListener('pageshow',syncLock);document.addEventListener('visibilitychange',syncLock);
 function ddEnsure(){
   if(DDS)return DDS;
   DDS=document.createElement('div');DDS.className='ddscrim';DDS.id='ddScrim';DDS.hidden=true;
@@ -1007,7 +1030,7 @@ function openDD(id){
   var sh=DDS.firstChild,list=document.getElementById('ddL');
   list.innerHTML=d.opts.map(function(o){return'<button type="button" class="ddopt" role="option" data-v="'+o[0]+'" aria-selected="'+(o[0]===val)+'">'+esc(o[1])+'</button>';}).join('');
   sh.className='ddsheet';sh.style.cssText='visibility:hidden';DDS.hidden=false;
-  ddPrevOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  syncLock();
   var r=btn.getBoundingClientRect(),vw=window.innerWidth,vh=window.innerHeight,gap=6,mar=12,
       want=list.scrollHeight+14,below=vh-r.bottom-gap-mar,above=r.top-gap-mar,up=want>below&&above>below,
       room=up?above:below,mh=Math.max(150,Math.min(want,room,vh*.72)),w=Math.max(r.width,200),
@@ -1021,7 +1044,7 @@ function openDD(id){
 }
 function closeDD(fp){
   if(!DDS||DDS.hidden)return;
-  DDS.hidden=true;document.body.style.overflow=ddPrevOv;
+  DDS.hidden=true;syncLock();
   var b=ddCur&&document.getElementById(ddCur);if(b)b.setAttribute('aria-expanded','false');
   if(!fp)ovDone('dd');
 }
@@ -1477,7 +1500,7 @@ var scrim=document.getElementById('scrim'), pvImg=document.getElementById('pvImg
     hint=document.getElementById('hint'), themeSeg=document.getElementById('themeSeg');
 var xChk=document.getElementById('xChk'), xLbl=document.getElementById('xLbl');
 var cur=null, curCanvas=null, cardTheme=(ls('card')==='light')?'light':'night', lastFocus=null, token=0, dl=null, dlTried=false, copyBox=null;
-footIn.value=ls('foot')||'';
+footIn.value=sget('foot')||'';
 function setSeg(){[].forEach.call(themeSeg.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-t')===cardTheme));});}
 async function refresh(){
   var my=++token;pvImg.hidden=true;pvLd.hidden=false;pvLd.textContent='جارٍ تجهيز الكارت';saveBtn.disabled=true;
@@ -1489,21 +1512,24 @@ async function refresh(){
 }
 function openModal(id){
   cur=D.filter(function(x){return x.id===id;})[0];if(!cur)return;
-  lastFocus=document.activeElement;mTitle.textContent=cur.t;msg.textContent='';
+  lastFocus=document.activeElement;mTitle.textContent=cur.t;msg.textContent='';footIn.value=sget('foot')||'';fSaveTxt(false);
   if(copyBox){copyBox.remove();copyBox=null;}
   var mm=document.getElementById('mMark');if(keyOf()==='browse'){mm.innerHTML=markBtn(cur.id);mm.hidden=false;}else{mm.innerHTML='';mm.hidden=true;}
-  xLbl.hidden=!cur.x;xLbl.lastChild.nodeValue=cur.st==='x'?' أضف ما جُرّب على الكارت':' أضف الشرح المختصر على الكارت';xChk.checked=!!cur.x&&ls('withx')==='1';setSeg();scrim.hidden=false;document.body.style.overflow='hidden';ovPush('modal');closeBtn.focus();
+  xLbl.hidden=!cur.x;xLbl.lastChild.nodeValue=cur.st==='x'?' أضف ما جُرّب على الكارت':' أضف الشرح المختصر على الكارت';xChk.checked=!!cur.x&&ls('withx')==='1';setSeg();scrim.hidden=false;syncLock();ovPush('modal');closeBtn.focus();
   if(!dlTried){dlTried=true;try{var u=window.claude&&window.claude.use?window.claude.use('downloads'):null;Promise.resolve(u).then(function(d){dl=d||null;if(!dl)hint.textContent='المقاس 1080×1350 (4:5). اضغط مطولاً على الصورة (أو انقر بزر الفأرة الأيمن) واختر حفظ الصورة.';}).catch(function(){dl=null;});}catch(e){dl=null;}}
   refresh();
 }
-function closeModal(fp){scrim.hidden=true;document.body.style.overflow=isPg()?'hidden':'';token++;if(lastFocus&&lastFocus.focus)lastFocus.focus();if(!fp)ovDone('modal');}
+function closeModal(fp){scrim.hidden=true;syncLock();token++;if(lastFocus&&lastFocus.focus)lastFocus.focus();if(!fp)ovDone('modal');}
 document.getElementById('mMark').addEventListener('click',function(e){if(e.target.closest('[data-mark]')&&cur)setMark(cur.id);});
 closeBtn.addEventListener('click',function(){closeModal();});
 scrim.addEventListener('click',function(e){if(e.target===scrim)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!scrim.hidden)closeModal();});
 themeSeg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;cardTheme=b.getAttribute('data-t');ls('card',cardTheme);setSeg();refresh();});
 xChk.addEventListener('change',function(){ls('withx',xChk.checked?'1':'0');refresh();});
-var ft=null;footIn.addEventListener('input',function(){ls('foot',footIn.value);clearTimeout(ft);ft=setTimeout(refresh,250);});
+var ft=null,fSave=document.getElementById('fSave');
+function fSaveTxt(saved){fSave.textContent=footIn.value.trim()?(saved?'تم حفظ الاسم، وسيظهر تلقائياً في كل كارت.':'الاسم المحفوظ يظهر تلقائياً في كل كارت.'):'اكتب الاسم مرة واحدة ويُحفظ على هذا الجهاز.';}
+fSaveTxt(false);
+footIn.addEventListener('input',function(){sset('foot',footIn.value);fSaveTxt(true);clearTimeout(ft);ft=setTimeout(refresh,250);});
 saveBtn.addEventListener('click',function(){
   if(!curCanvas)return;
   if(!dl){curCanvas.toBlob(function(b){if(!b){msg.textContent='تعذر إنشاء الصورة.';return;}var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=cur.id.replace('basaer-','mawthuq-')+'-'+cardTheme+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},5000);msg.textContent='جارٍ التنزيل. وإن لم يبدأ فاضغط مطولاً على الصورة لحفظها.';},'image/png');return;}
