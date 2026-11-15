@@ -121,7 +121,7 @@ button.chip[aria-current="page"]{border-bottom-color:var(--bad)}
 .items{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,470px),1fr)); gap:16px; margin-top:14px; align-items:start}
 .item{display:block; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:18px 20px 20px; box-shadow:0 1px 0 var(--line)}
 .item > .col{min-width:0; display:flex; flex-direction:column; gap:10px}
-.item .no{font-family:var(--f-ui); font-size:12.5px; color:var(--accent-ink); background:var(--accent); border-radius:4px; padding:0 8px; line-height:1.7; font-variant-numeric:tabular-nums}
+.item .no{font-family:var(--f-ui); font-size:12.5px; color:var(--accent-ink); background:var(--accent); border-radius:4px; padding:0 8px; min-width:24px; text-align:center; box-sizing:border-box; line-height:1.7; font-variant-numeric:tabular-nums}
 .item .meta{display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-family:var(--f-ui); font-size:13px; color:var(--muted)}
 .pill.ok{color:var(--accent); font-weight:700} .pill.nt{font-style:italic} .pill.wn{color:var(--gold); font-weight:700}
 .item h3{font-family:var(--f-display); font-weight:700; font-size:26px; line-height:1.5; margin:0}
@@ -233,7 +233,7 @@ details.hd summary{cursor:pointer; font-family:var(--f-ui); font-size:14.5px; fo
 .rule.fold.can{cursor:pointer}
 /* ===== v37: bottom nav, star, pager, comfortable dark mode ===== */
 :root{--navh:62px; --hdrh:120px}
-.cathead{margin-top:24px}
+.cathead{margin-top:10px}
 .chips + .cathead{margin-top:28px}
 .bnav{position:fixed; inset:auto 0 0 0; z-index:20; background:var(--bg); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom,0px)}
 .bnav ul{list-style:none; margin:0 auto; padding:0; max-width:1040px; display:grid; grid-template-columns:repeat(5,1fr)}
@@ -254,8 +254,19 @@ main{padding-block:28px calc(var(--navh) + 40px)}
 .btn.mk svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2}
 .btn.mk[aria-pressed="true"]{background:var(--gold); border-color:var(--gold); color:var(--accent-ink)}
 .btn.mk[aria-pressed="true"] svg{fill:currentColor}
-.vm{margin-inline-start:auto}
-.filters .vm + .count{margin-inline-start:12px}
+.vmbtn{display:inline-flex; align-items:center; justify-content:center; flex:none; width:38px; height:38px; padding:0; margin-inline-start:auto; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none}
+.vmbtn:hover{border-color:var(--accent)}
+.vmbtn:active{opacity:.72}
+.vmbtn svg{width:19px; height:19px}
+/* title row: name (and count) on one side, the view toggle at the other end */
+.trow{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.trow h1{margin:4px 0}
+.grow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:26px 0 0}
+.grow .grp{margin:0}
+.chips + .grow{margin-top:22px}
+.cathead + .chips{margin-top:10px}
+.errnote{font-family:var(--f-ui); font-size:13px; line-height:1.9; color:var(--muted); text-align:center; max-width:34em; margin:22px auto 0; padding:14px 6px 0; border-top:1px solid var(--line)}
+.slide .errnote{margin-top:26px; max-width:30em}
 .toast{position:fixed; z-index:60; inset-inline:0; bottom:calc(var(--navh) + 14px); margin-inline:auto; width:max-content; max-width:calc(100% - 40px); background:var(--ink); color:var(--bg); font-family:var(--f-ui); font-size:14.5px; line-height:1.5; padding:9px 18px; border-radius:999px; opacity:0; pointer-events:none; transform:translateY(8px); transition:opacity .18s, transform .18s}
 .toast.on{opacity:1; transform:none}
 /* pager screens */
@@ -283,7 +294,7 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 .pager.flying .slide{pointer-events:none}
 .item.lite{min-height:100%; box-sizing:border-box; overflow:hidden}
 .slide{direction:rtl; flex:0 0 100%; min-width:0; scroll-snap-align:start; scroll-snap-stop:always; overflow:hidden; contain:layout paint style}
-.slide > .sl{height:100%; box-sizing:border-box; overflow-y:auto; overscroll-behavior-y:contain; padding:10px 1px 22px}
+.slide > .sl{height:100%; box-sizing:border-box; overflow-y:auto; overscroll-behavior-y:contain; padding:9px 1px 22px}
 .slide .item,.slide .bhead{max-width:760px; margin-inline:auto}
 .bhead{display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; font-family:var(--f-ui); font-size:13.5px; color:var(--muted)}
 .bhead a{color:var(--accent); text-decoration:none; font-weight:600}
@@ -294,7 +305,7 @@ html,body,*{scrollbar-width:none !important; -ms-overflow-style:none}
 .pgabout p{margin:8px 0 0; font-size:17px; line-height:1.85}
 .emptyst{padding:40px 6px; color:var(--muted); font-size:20px; max-width:34em}
 /* ---- v42: page-turn effects (افتراضي / بطاقة / إمالة) + fixed info bar ---- */
-.pgbar{flex:none; width:100%; max-width:760px; margin:0 auto 6px; padding-inline:1px}
+.pgbar{flex:none; width:100%; max-width:760px; margin:0 auto 8px; padding-inline:1px}
 .pgctl + .pgbar{margin-top:14px}
 /* v44: page-turn effects run on the compositor (scroll-driven animations): no per-frame JS, so no jitter; browsers without support just scroll plainly */
 @keyframes pgDepth{0%{opacity:.45; transform:scale(.92)} 50%{opacity:1; transform:scale(1)} 100%{opacity:.45; transform:scale(.92)}}
@@ -752,7 +763,9 @@ RJ.forEach(function(r){D.push({c:r.c,t:r.t,b:r.b,s:r.s,r:r.r,k:r.k,x:r.x,id:r.id
 var CM={};CATS.forEach(function(c){CM[c.k]=c;});
 (function(){var n={},nx={};D.forEach(function(it){if(it.st==='x'){nx[it.c]=(nx[it.c]||0)+1;it.no=nx[it.c];return;}n[it.c]=(n[it.c]||0)+1;it.no=n[it.c];var e=it.up?null:XM[it.id];if(e&&it.st==='ok'){it.x=e.x;if(e.m)it.m=e.m;}});})();
 function ar(n){return String(n).replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d];});}
-function ar2(n){return ar(n<10?'0'+n:n);}
+function ar2(n){return ar(n);}
+/* card header line: «رقم ٣ — معجزة حسية» (no zero-padding: the Arabic zero is drawn as a dot) */
+function noTag(it){return 'رقم '+ar(it.no)+(it.tg?'  —  '+it.tg:'');}
 function catItems(k){return D.filter(function(x){return x.c===k&&x.st!=='x';});}
 function rejItems(k){return D.filter(function(x){return x.st==='x'&&(!k||x.c===k);});}
 function cnt(k){var a=catItems(k);return{all:a.length,ok:a.filter(function(x){return x.st==='ok';}).length,nt:a.filter(function(x){return x.st==='nt';}).length,wn:a.filter(function(x){return x.st==='wn';}).length};}
@@ -853,34 +866,39 @@ function renderHome(){
 function renderSources(){
   view.innerHTML='<section class="cathead"><h1>المصادر المعتمدة</h1><p class="intro">تذكر كل بطاقة مصدرها برقم الحديث أو الآية أو الصفحة، وهذه قائمة جامعة بالمصادر التي استُند إليها مرتبة بحسب نوعها. وحيث ذُكر عدد فهو عدد البطاقات التي تستشهد بالمصدر.</p></section><section class="block" style="margin-top:8px">'+srcGroups()+'</section>';
 }
+var ERRNOTE='<p class="errnote">الموقع جهد بشري والخطأ فيه وارد؛ فإن وجدتَ ما يخالف المصدر الأصلي فالمرجع هو المصدر المذكور في البطاقة.</p>';
+function addNote(){view.insertAdjacentHTML('beforeend',ERRNOTE);}
 function addFoot(){if((location.hash||'').slice(1)!=='sources')view.insertAdjacentHTML('beforeend','<p class="srcfoot"><a href="#sources">المصادر المعتمدة في الموقع</a></p>');}
 var RK='';
 function cntWord(n){return n===1?'عنصر واحد':n===2?'عنصران':n<=10?ar(n)+' عناصر':ar(n)+' عنصراً';}
-function grpHead(c,n){return'<h2 class="grp">'+esc(c.n)+' <span class="gcnt">'+cntWord(n)+'</span></h2>';}
+function grpHead(c,n,x){var h='<h2 class="grp">'+esc(c.n)+' <span class="gcnt">'+cntWord(n)+'</span></h2>';return x?'<div class="grow">'+h+x+'</div>':h;}
 var REJ_INTRO='كما يفصل علماء الحديث الصحيح عن الضعيف، يفصل الموقع هنا الموثوق عن غير الموثوق: ما شاع تداوله ولم يثبت يُعرض مع سبب عدم الاعتماد عليه، حتى يعرف القارئ لماذا لا يُحتج به ولا يُتداول خطأً. لكل عنصر هنا كارت بتصميم خاص يبيّن أنه غير موثوق وسبب ذلك، حتى يُنشر التحذير كما يُنشر الصحيح.';
 function renderRejected(){
   var all=rejItems(), kinds=[];all.forEach(function(x){if(kinds.indexOf(x.k)<0)kinds.push(x.k);});
   var list=all.filter(function(x){return!RK||x.k===RK;});
   var chips='<nav class="chips" aria-label="نوع السبب"><button type="button" class="chip" data-rk=""'+(RK===''?' aria-current="page"':'')+'>الكل ('+ar(all.length)+')</button>'+kinds.map(function(k){return'<button type="button" class="chip" data-rk="'+esc(k)+'"'+(RK===k?' aria-current="page"':'')+'>'+esc(k)+' ('+ar(all.filter(function(x){return x.k===k;}).length)+')</button>';}).join('')+'</nav>';
-  var wnl='<p class="hint" style="margin-top:8px">العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.</p>';
+  var wnl=' العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.';
   if(ST.vmode==='swipe'&&list.length){
     setPg(true);
-    view.innerHTML='<div class="pgv">'+chips+'<div class="pgctl"><div class="pgrow"><span class="pgt">غير الموثوق: ما استُبعد ولماذا</span><span class="pgcnt" id="pgCnt"></span></div>'+
-      '<div class="pgrow">'+vmHTML()+fxBtn()+'</div>'+
-      '<details class="hd pgabout"><summary>عن هذا القسم</summary><p>'+esc(REJ_INTRO)+'</p>'+wnl+'</details></div>'+pagerHTML()+'</div>';
+    view.innerHTML='<div class="pgv">'+chips+'<div class="pgctl"><div class="pgrow"><span class="pgt">غير الموثوق: ما استُبعد ولماذا</span>'+vmHTML()+'</div>'+
+      '<div class="pgrow">'+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div>'+
+      '<details class="hd pgabout"><summary>عن هذا القسم</summary><p>'+esc(REJ_INTRO)+wnl+'</p></details></div>'+pagerHTML()+'</div>';
     fixChips();initPager(list,0,{bar:true});return;
   }
   var h='<section class="cathead"><h1>غير الموثوق: ما استُبعد ولماذا</h1>'+
-   '<p class="intro fold l2"><span class="ftxt">'+esc(REJ_INTRO)+'</span>'+FMORE+'</p></section>';
-  h+=chips+'<div class="filters">'+vmHTML()+'<span class="count">'+ar(list.length)+' من '+ar(all.length)+'</span></div>'+wnl;
-  CATS.forEach(function(c){var a=list.filter(function(x){return x.c===c.k;});if(a.length)h+=grpHead(c,a.length)+'<div class="items">'+a.map(itemHTML).join('')+'</div>';});
+   '<p class="intro fold l2"><span class="ftxt">'+esc(REJ_INTRO)+wnl+'</span>'+FMORE+'</p></section>';
+  h+=chips;var firstG=true;
+  CATS.forEach(function(c){var a=list.filter(function(x){return x.c===c.k;});if(a.length){h+=grpHead(c,a.length,firstG?vmHTML():'')+'<div class="items">'+a.map(itemHTML).join('')+'</div>';firstG=false;}});
   view.innerHTML=h;fixChips();
 }
 function filt(a){return a.filter(function(x){return filter==='all'||(filter==='ok'&&x.st==='ok')||(filter==='nt'&&x.st==='nt')||(filter==='wn'&&x.st==='wn');});}
 function segHTML(){function b(k,l){return'<button type="button" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+l+'</button>';}
   return'<div class="seg" role="group" aria-label="تصفية">'+b('all','الكل')+b('ok','موثّق')+b('wn','تنبيه')+'</div>';}
-function vmHTML(){function b(k,l){return'<button type="button" data-vm="'+k+'" aria-pressed="'+(ST.vmode===k)+'">'+l+'</button>';}
-  return'<div class="seg vm" role="group" aria-label="طريقة العرض">'+b('list','قائمة')+b('swipe','تمرير')+'</div>';}
+var VMI={list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>',
+  swipe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M2.5 8v8M21.5 8v8"/></svg>'};
+/* one square button, no text: shows the view it will switch to */
+function vmHTML(){var to=ST.vmode==='swipe'?'list':'swipe',lb=to==='list'?'عرض العناصر كقائمة':'عرض العناصر بالتمرير';
+  return'<button type="button" class="vmbtn" data-vm="'+to+'" aria-label="'+lb+'" title="'+lb+'">'+VMI[to]+'</button>';}
 function filtersHTML(total,shown,vm){
   return'<div class="filters">'+segHTML()+(vm?vmHTML():'')+'<span class="count">'+ar(shown)+' من '+ar(total)+'</span></div>';
 }
@@ -895,14 +913,14 @@ function renderCat(k){
   var c=CM[k], all=catItems(k), list=filt(all), rn=rejItems(k).length;
   if(ST.vmode==='swipe'&&list.length){
     setPg(true);
-    view.innerHTML='<div class="pgv">'+chipsHTML(k)+'<div class="pgctl"><div class="pgrow"><span class="pgt">'+esc(c.n)+'</span><span class="pgcnt" id="pgCnt"></span></div>'+
-      '<div class="pgrow">'+segHTML()+vmHTML()+fxBtn()+'</div>'+
+    view.innerHTML='<div class="pgv">'+chipsHTML(k)+'<div class="pgctl"><div class="pgrow"><span class="pgt">'+esc(c.n)+'</span>'+vmHTML()+'</div>'+
+      '<div class="pgrow">'+segHTML()+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div>'+
       '<details class="hd pgabout"><summary>عن الفئة</summary><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule">'+esc(c.dn)+'</p>':'')+(rn?'<p><a href="#" data-rejcat="'+k+'">المستبعد من هذه الفئة لعدم ثبوته ('+ar(rn)+')</a></p>':'')+'</details></div>'+pagerHTML()+'</div>';
     fixChips();initPager(list,0,{});return;
   }
   var h=''+chipsHTML(k);
-  h+='<section class="cathead"><h1>'+esc(c.n)+'</h1><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule fold"><span class="ftxt">'+esc(c.dn)+'</span>'+FMORE+'</p>':'')+'</section>';
-  h+=filtersHTML(all.length,list.length,true);
+  h+='<section class="cathead"><div class="trow"><h1>'+esc(c.n)+'</h1>'+vmHTML()+'</div><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule fold"><span class="ftxt">'+esc(c.dn)+'</span>'+FMORE+'</p>':'')+'</section>';
+  h+=filtersHTML(all.length,list.length);
   h+=list.length?'<div class="items">'+list.map(function(x){return itemHTML(x);}).join('')+'</div>':'<p class="empty">لا عناصر بهذا التصنيف.</p>';
   if(rn)h+='<p class="hint" style="margin-top:22px"><a href="#" data-rejcat="'+k+'">المستبعد من هذه الفئة لعدم ثبوته ('+ar(rn)+')</a></p>';
   view.innerHTML=h;fixChips();
@@ -926,10 +944,11 @@ function route(){
   var q=qEl.value.trim(), k=keyOf();
   var oc=view.querySelector('.chips');CHIPX=oc?oc.scrollLeft:null;
   setPg(false);
-  if(q||isFiltering()){renderSearch(q);addFoot();navSel('home');setHdr();return;}
+  if(q||isFiltering()){renderSearch(q);addFoot();addNote();navSel('home');setHdr();return;}
   if(k==='rejected')renderRejected();else if(k==='sources')renderSources();else if(k==='browse')renderBrowse();else if(k==='starred')renderStarred();else if(CM[k])renderCat(k);else renderHome();
   if(!isPg()&&(k==='rejected'||k==='sources'||CM[k]||k==='starred'))addFoot();
   if(isHomeKey(k)&&window.MWQ_PWA)addInstall();
+  if(!isPg())addNote();
   navSel(k);setHdr();
   if(!isPg())window.scrollTo(0,0);
 }
@@ -1076,7 +1095,7 @@ function setHdr(){var h=document.querySelector('header.top'),n=document.getEleme
 var PG=null;
 function pagerHTML(){return'<div class="pgwrap"><div class="pager" id="pager" dir="ltr" tabindex="0" aria-label="العناصر. مرّر أفقياً لعنصر جديد"></div><button type="button" class="pgarr nx" data-pg="1" aria-label="التالي">‹</button><button type="button" class="pgarr pv" data-pg="-1" aria-label="السابق">›</button></div>';}
 function slideHTML(it){
-  return itemHTML(it,{mark:!!PG.opts.mark});
+  return itemHTML(it,{mark:!!PG.opts.mark})+ERRNOTE;
 }
 /* fixed bar (browse / starred): category name + card number, stays put while the cards move */
 function pgBar(){var el=document.getElementById('pgBar');if(!el||!PG)return;var it=PG.list[PG.idx];
@@ -1214,10 +1233,10 @@ function renderStarred(){
   if(!list.length){view.innerHTML='<section class="cathead"><h1>المميّز بنجمة</h1><p>العناصر التي تميّزها بنجمة تُحفظ هنا على جهازك.</p></section><p class="emptyst">لم تميّز أي عنصر بعد. اضغط على النجمة في أعلى أي بطاقة لتظهر هنا.</p>';return;}
   if(ST.vmode==='swipe'){
     setPg(true);
-    view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">المميّز بنجمة</span><span class="pgcnt" id="pgCnt"></span></div><div class="pgrow">'+vmHTML()+fxBtn()+'</div></div>'+pagerHTML()+'</div>';
+    view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">المميّز بنجمة</span>'+vmHTML()+'</div><div class="pgrow">'+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div></div>'+pagerHTML()+'</div>';
     initPager(list,0,{bar:true});return;
   }
-  view.innerHTML='<section class="cathead"><h1>المميّز بنجمة</h1><p>العناصر التي ميّزتها بنجمة على هذا الجهاز.</p></section><div class="filters">'+vmHTML()+'<span class="count">'+ar(list.length)+' عنصر</span></div><div class="items">'+list.map(function(x){return itemHTML(x,{cat:true});}).join('')+'</div>';
+  view.innerHTML='<section class="cathead"><div class="trow"><h1>المميّز بنجمة</h1>'+vmHTML()+'</div><p>العناصر التي ميّزتها بنجمة على هذا الجهاز.</p></section><div class="filters"><span class="count">'+ar(list.length)+' عنصر</span></div><div class="items">'+list.map(function(x){return itemHTML(x,{cat:true});}).join('')+'</div>';
 }
 /* ---------- install hint (only on the installable site) ---------- */
 var deferredInstall=null;
@@ -1367,7 +1386,7 @@ async function drawCard2(it,theme,foot,withX){
   if(kind==='x'){ctx.strokeStyle=AC;ctx.lineWidth=6;rrect(ctx,30,30,W-60,H-60,22);ctx.stroke();ctx.lineWidth=2;rrect(ctx,46,46,W-92,H-92,14);ctx.stroke();}
   if(kind==='ok'){
     ctx.fillStyle=P.accent;ctx.font='700 38px '+FD;ctx.fillText(cat.n,XR,128);
-    ctx.fillStyle=P.muted;ctx.font='500 26px '+FU;ctx.textAlign='left';ctx.fillText(ar2(it.no)+(it.tg?'  ·  '+it.tg:''),104,126);ctx.textAlign='right';
+    ctx.fillStyle=P.muted;ctx.font='500 26px '+FU;ctx.textAlign='left';ctx.fillText(noTag(it),104,126);ctx.textAlign='right';
     ctx.strokeStyle=P.ink;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(104,158);ctx.lineTo(XR,158);ctx.stroke();
     y=196;
   }else{
@@ -1377,7 +1396,7 @@ async function drawCard2(it,theme,foot,withX){
     ctx.fillStyle=P.bg;ctx.font='700 46px '+FD;ctx.fillText(kind==='x'?'غير موثوق':'تنبيه',XR-28,141);
     ctx.font='500 26px '+FU;ctx.textAlign='left';ctx.fillText(kind==='x'?(it.k||''):'موثّق بشرط',104+28,137);ctx.textAlign='right';
     ctx.fillStyle=P.accent;ctx.font='700 32px '+FD;ctx.fillText(cat.n,XR,222);
-    ctx.fillStyle=P.muted;ctx.font='500 24px '+FU;ctx.textAlign='left';ctx.fillText(ar2(it.no)+(it.tg?'  ·  '+it.tg:''),104,220);ctx.textAlign='right';
+    ctx.fillStyle=P.muted;ctx.font='500 24px '+FU;ctx.textAlign='left';ctx.fillText(noTag(it),104,220);ctx.textAlign='right';
     y=246;
   }
   /* title */
@@ -1441,7 +1460,7 @@ async function drawCard(it,theme,foot,withX){
   var cat=CM[it.c];
   ctx.fillStyle=P.accent;ctx.font='700 38px '+FD;ctx.textAlign='right';ctx.fillText(cat.n,XR,128);
   ctx.fillStyle=P.muted;ctx.font='500 26px '+FU;ctx.textAlign='left';ctx.direction='rtl';
-  ctx.fillText(ar2(it.no)+(it.tg?'  ·  '+it.tg:''),104,126);ctx.textAlign='right';
+  ctx.fillText(noTag(it),104,126);ctx.textAlign='right';
   ctx.strokeStyle=P.ink;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(104,158);ctx.lineTo(XR,158);ctx.stroke();
   /* title */
   var ts=80,tl;
