@@ -257,7 +257,7 @@ main{padding-block:28px calc(var(--navh) + 40px)}
 .vmbtn{display:inline-flex; align-items:center; justify-content:center; flex:none; width:38px; height:38px; padding:0; margin-inline-start:auto; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none}
 .vmbtn:hover{border-color:var(--accent)}
 .vmbtn:active{opacity:.72}
-.vmbtn.fxbtn{margin-inline-start:0}
+.fxbtn + .vmbtn{margin-inline-start:0}
 .vmbtn svg{width:19px; height:19px}
 /* title row: name (and count) on one side, the view toggle at the other end */
 .trow{display:flex; align-items:center; justify-content:space-between; gap:12px}
@@ -881,8 +881,8 @@ function renderRejected(){
   var wnl=' العناصر محل الخلاف تبقى في فئاتها بعلامة «تنبيه»: <a href="#" data-wnlink="1">اعرضها</a>.';
   if(ST.vmode==='swipe'&&list.length){
     setPg(true);
-    view.innerHTML='<div class="pgv">'+chips+'<div class="pgctl"><div class="pgrow"><span class="pgt">غير الموثوق: ما استُبعد ولماذا</span>'+vmHTML()+'</div>'+
-      '<div class="pgrow">'+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div>'+
+    view.innerHTML='<div class="pgv">'+chips+'<div class="pgctl"><div class="pgrow"><span class="pgt">غير الموثوق: ما استُبعد ولماذا</span>'+fxBtn()+vmHTML()+'</div>'+
+      '<div class="pgrow"><span class="pgcnt" id="pgCnt"></span></div>'+
       '<details class="hd pgabout"><summary>عن هذا القسم</summary><p>'+esc(REJ_INTRO)+wnl+'</p></details></div>'+pagerHTML()+'</div>';
     fixChips();initPager(list,0,{bar:true});return;
   }
@@ -914,8 +914,8 @@ function renderCat(k){
   var c=CM[k], all=catItems(k), list=filt(all), rn=rejItems(k).length;
   if(ST.vmode==='swipe'&&list.length){
     setPg(true);
-    view.innerHTML='<div class="pgv">'+chipsHTML(k)+'<div class="pgctl"><div class="pgrow"><span class="pgt">'+esc(c.n)+'</span>'+vmHTML()+'</div>'+
-      '<div class="pgrow">'+segHTML()+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div>'+
+    view.innerHTML='<div class="pgv">'+chipsHTML(k)+'<div class="pgctl"><div class="pgrow"><span class="pgt">'+esc(c.n)+'</span>'+fxBtn()+vmHTML()+'</div>'+
+      '<div class="pgrow">'+segHTML()+'<span class="pgcnt" id="pgCnt"></span></div>'+
       '<details class="hd pgabout"><summary>عن الفئة</summary><p>'+esc(c.d)+'</p>'+(c.dn?'<p class="rule">'+esc(c.dn)+'</p>':'')+(rn?'<p><a href="#" data-rejcat="'+k+'">المستبعد من هذه الفئة لعدم ثبوته ('+ar(rn)+')</a></p>':'')+'</details></div>'+pagerHTML()+'</div>';
     fixChips();initPager(list,0,{});return;
   }
@@ -1220,8 +1220,8 @@ function renderBrowse(startId){
   function b(k,l){return'<button type="button" data-bf="'+k+'" aria-pressed="'+(f===k)+'">'+l+' <small>'+ar(C[k])+'</small></button>';}
   var canGo=!!(ST.mark&&itemById(ST.mark.id));
   view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">تصفّح العناصر</span><span class="pgcnt" id="pgCnt"></span><button type="button" class="fbtn ico" data-pgtop="1" aria-label="العودة إلى أول عنصر" title="العودة إلى أول عنصر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button></div>'+
-    '<div class="pgrow"><div class="seg" role="group" aria-label="نوع العناصر">'+b('all','الكل')+b('ok','موثّق')+b('wn','تنبيه')+b('x','مستبعد')+'</div></div>'+
-    '<div class="pgrow"><button type="button" class="fbtn" data-bo="'+(o==='cat'?'rnd':'cat')+'" title="تغيير الترتيب">الترتيب: '+(o==='cat'?'حسب الفئات':'عشوائي ثابت')+'</button>'+fxBtn()+'<button type="button" class="fbtn" id="goMark"'+(canGo?'':' disabled')+'>اذهب للعلامة</button></div></div>'+pagerHTML()+'</div>';
+    '<div class="pgrow"><div class="seg" role="group" aria-label="نوع العناصر">'+b('all','الكل')+b('ok','موثّق')+b('wn','تنبيه')+b('x','مستبعد')+'</div>'+fxBtn()+'</div>'+
+    '<div class="pgrow"><button type="button" class="fbtn" data-bo="'+(o==='cat'?'rnd':'cat')+'" title="تغيير الترتيب">الترتيب: '+(o==='cat'?'حسب الفئات':'عشوائي ثابت')+'</button><button type="button" class="fbtn" id="goMark"'+(canGo?'':' disabled')+'>اذهب للعلامة</button></div></div>'+pagerHTML()+'</div>';
   initPager(list,idx,{mark:true,bar:true});
 }
 function curPgId(){return PG&&PG.list[PG.idx]?PG.list[PG.idx].id:null;}
@@ -1238,7 +1238,7 @@ function renderStarred(){
   if(!list.length){view.innerHTML='<section class="cathead"><h1>المميّز بنجمة</h1><p>العناصر التي تميّزها بنجمة تُحفظ هنا على جهازك.</p></section><p class="emptyst">لم تميّز أي عنصر بعد. اضغط على النجمة في أعلى أي بطاقة لتظهر هنا.</p>';return;}
   if(ST.vmode==='swipe'){
     setPg(true);
-    view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">المميّز بنجمة</span>'+vmHTML()+'</div><div class="pgrow">'+fxBtn()+'<span class="pgcnt" id="pgCnt"></span></div></div>'+pagerHTML()+'</div>';
+    view.innerHTML='<div class="pgv"><div class="pgctl"><div class="pgrow"><span class="pgt">المميّز بنجمة</span>'+fxBtn()+vmHTML()+'</div><div class="pgrow"><span class="pgcnt" id="pgCnt"></span></div></div>'+pagerHTML()+'</div>';
     initPager(list,0,{bar:true});return;
   }
   view.innerHTML='<section class="cathead"><div class="trow"><h1>المميّز بنجمة</h1>'+vmHTML()+'</div><p>العناصر التي ميّزتها بنجمة على هذا الجهاز.</p></section><div class="filters"><span class="count">'+ar(list.length)+' عنصر</span></div><div class="items">'+list.map(function(x){return itemHTML(x,{cat:true});}).join('')+'</div>';
