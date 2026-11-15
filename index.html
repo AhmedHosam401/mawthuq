@@ -257,6 +257,7 @@ main{padding-block:28px calc(var(--navh) + 40px)}
 .vmbtn{display:inline-flex; align-items:center; justify-content:center; flex:none; width:38px; height:38px; padding:0; margin-inline-start:auto; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none}
 .vmbtn:hover{border-color:var(--accent)}
 .vmbtn:active{opacity:.72}
+.vmbtn.fxbtn{margin-inline-start:0}
 .vmbtn svg{width:19px; height:19px}
 /* title row: name (and count) on one side, the view toggle at the other end */
 .trow{display:flex; align-items:center; justify-content:space-between; gap:12px}
@@ -1105,7 +1106,11 @@ function pgBar(){var el=document.getElementById('pgBar');if(!el||!PG)return;var 
 /* ---------- page-turn effects, shared by every horizontal swipe on the site ---------- */
 var FXN={depth:'عمق',rise:'ارتفاع',none:'بدون'},FXO=['depth','rise','none'];
 var FXOK=false;try{FXOK=!!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view(inline)'));}catch(e){}
-function fxBtn(){if(!FXOK)return'';return'<button type="button" class="fbtn" data-fx="1" title="تغيير تأثير الانتقال بين العناصر">الانتقال: '+FXN[ST.fx]+'</button>';}
+var FXI={depth:'<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/>',rise:'<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',none:'<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>'};
+/* one square icon-only button: its icon shows the current effect (layers = depth, arrow = rise, slashed circle = none); each press moves to the next */
+function fxLabel(){return'تأثير الانتقال بين العناصر: '+FXN[ST.fx]+'. اضغط للتغيير';}
+function fxSvg(){return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+FXI[ST.fx]+'</svg>';}
+function fxBtn(){if(!FXOK)return'';return'<button type="button" class="vmbtn fxbtn" data-fx="1" aria-label="'+fxLabel()+'" title="'+fxLabel()+'">'+fxSvg()+'</button>';}
 function pgFx(){if(!PG)return;var c=PG.pg.classList;c.remove('fx-depth','fx-rise','fx-none');c.add('fx-'+ST.fx);}
 function pgCount(){var el=document.getElementById('pgCnt');if(el&&PG)el.textContent=ar(PG.idx+1)+' من '+ar(PG.list.length);pgBar();}
 function pgEl(j){return PG.pg.children[PG.list.length-1-j];}
@@ -1296,7 +1301,7 @@ view.addEventListener('click',function(e){
   if(t.closest('#goMark')){goMark();return;}
   if(t.closest('[data-pgtop]')){if(PG)pgRewind();return;}
   if(t.closest('[data-fx]')){ST.fx=FXO[(FXO.indexOf(ST.fx)+1)%FXO.length];sset('fx',ST.fx);
-    [].forEach.call(view.querySelectorAll('[data-fx]'),function(b){b.textContent='الانتقال: '+FXN[ST.fx];});pgFx();return;}
+    [].forEach.call(view.querySelectorAll('[data-fx]'),function(b){b.innerHTML=fxSvg();b.setAttribute('aria-label',fxLabel());b.title=fxLabel();});pgFx();toast('الانتقال: '+FXN[ST.fx]);return;}
   if((x=t.closest('[data-pg]'))){if(PG)pgGo(PG.idx+(+x.getAttribute('data-pg')),true);return;}
   if(t.closest('#instBtn')&&deferredInstall){deferredInstall.prompt();deferredInstall=null;var b=document.getElementById('instBtn');if(b)b.hidden=true;return;}
 });
