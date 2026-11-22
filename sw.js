@@ -1,5 +1,5 @@
-/* موثوق — service worker. Build d01026bacd. Never touches localStorage: user marks/stars survive every update. */
-var VER='mwq-d01026bacd';
+/* موثوق — service worker. Build 8354aba03e. Never touches localStorage: user marks/stars survive every update. */
+var VER='mwq-8354aba03e';
 var CORE=["./", "index.html", "manifest.webmanifest", "fonts/fonts.css", "icons/icon-192-v2.png", "icons/icon-512-v2.png", "icons/icon-maskable-512-v2.png", "icons/apple-touch-icon-v2.png", "icons/favicon-v2.svg", "fonts/amiri-arabic-400-normal.woff2", "fonts/amiri-arabic-700-normal.woff2", "fonts/amiri-latin-400-normal.woff2", "fonts/amiri-latin-700-normal.woff2", "fonts/tajawal-arabic-400-normal.woff2", "fonts/tajawal-arabic-500-normal.woff2", "fonts/tajawal-arabic-700-normal.woff2", "fonts/tajawal-latin-400-normal.woff2", "fonts/tajawal-latin-500-normal.woff2", "fonts/tajawal-latin-700-normal.woff2"];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(VER).then(function(c){return c.addAll(CORE);}).then(function(){return self.skipWaiting();}));
