@@ -390,8 +390,6 @@ header.top,.bnav,button,.chips,.kchips,.seg,.tile,.bhead,.pgarr,.modebtn,.starb,
 .detbox .dm .hs{font-family:var(--f-ui); font-size:12.5px; color:var(--accent); font-weight:700}
 .detbox ul{margin:0; padding:0 18px 0 0}
 .detbox.detpage{font-size:18px; margin-top:16px}
-.detpg .detback{margin:0 0 10px; font-family:var(--f-ui); color:var(--ink)}
-.detpg .detback:hover{border-color:var(--accent); color:var(--accent)}
 .detbox li{margin:2px 0}
 
 .tourbtn{margin-top:14px; display:inline-flex; align-items:center}
@@ -1066,7 +1064,7 @@ var DETRX=/^item\/(.+)\/details$/, DETRET=null, RETID=null;
 function detKey(k){var m=DETRX.exec(k||'');return m&&itemById(m[1])?m[1]:null;}
 function renderDetails(id){
   var it=itemById(id);
-  view.innerHTML='<section class="cathead detpg"><button type="button" class="fbtn detback" data-detback="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>رجوع</button><h1>تفاصيل العنصر وكل مصادره</h1><p>'+esc(it.t)+'</p></section><div class="detbox detpage">'+detailsHTML(it)+'</div>';
+  view.innerHTML='<section class="cathead"><div class="trow"><h1>تفاصيل العنصر وكل مصادره</h1></div><p>'+esc(it.t)+'</p></section><div class="detbox detpage">'+detailsHTML(it)+'</div>';
 }
 function openDetails(id){
   var q=qEl.value,fx=JSON.parse(JSON.stringify(F));
@@ -1077,12 +1075,6 @@ function openDetails(id){
   var u='#item/'+id+'/details',st=history.state;
   try{if(st&&st.ov==='modal')history.replaceState({det:id},'',u);else history.pushState({det:id},'',u);}catch(e){location.hash=u;return;}
   curKey=keyOf();route();
-}
-function detBack(){
-  var k=detKey(keyOf()),st=history.state;
-  if(st&&st.det)history.back();
-  else if(k)location.hash='#'+k;
-  else history.back();
 }
 function route(){
   syncLock();
@@ -1134,7 +1126,6 @@ view.addEventListener('click',function(e){
   if(e.target.closest('[data-wnlink]')){e.preventDefault();applyF('','wn');window.scrollTo(0,0);return;}
   var rk=e.target.closest('[data-rk]');if(rk){RK=rk.getAttribute('data-rk');var y0=window.scrollY;route();window.scrollTo(0,y0);return;}
   var f=e.target.closest('[data-f]');if(f){filter=f.getAttribute('data-f');var y=window.scrollY;route();window.scrollTo(0,y);return;}
-  if(e.target.closest('[data-detback]')){e.preventDefault();detBack();return;}
   var b=e.target.closest('[data-card]');if(b){openModal(b.getAttribute('data-card'));}
 });
 
